@@ -3,8 +3,8 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = 17
-targetCompatibility = 17
+sourceCompatibility = 8
+targetCompatibility = 8
 
 group = "de.phoenixmitx"
 archivesBaseName = "LombokExtensions"
