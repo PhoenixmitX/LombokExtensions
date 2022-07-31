@@ -91,8 +91,11 @@ public class ArrayExtention {
 	 * 
 	 * T[] filter(Predicate<T> condition)
 	 * 
-	 * R[] map(T[] arr, Function<T,R> fuction, IntFunction<R[]> supplier)
+	 * [OBJ] R[] map(Function<T,R> fuction, IntFunction<R[]> supplier)
 	 * T[] map(UnaryOperator<T> function)
+	 * T[] flattened()
+	 * T[] flatMap(Function<T,T[]> function)
+	 * [OBJ] R[] flatMap(Function<T,R> function, IntFunction<R[]> supplier)
 	 * int[] mapToInt(ToIntFunction<T> function)
 	 * long[] mapToLong(ToLongFunction<T> function)
 	 * double[] mapToDouble(ToDoubleFunction<T> function)
@@ -109,7 +112,7 @@ public class ArrayExtention {
 	 * add javadoc for each method
 	 * add all methods from java.util.Arrays
 	 * use java.util.Arrays to implement methods where possible
-	 * test whhats the fastes way to add elements into to an array
+	 * test whats the fastes way to add elements into to an array
 	 */
 
 	// GENERIC ARRAYS
@@ -287,8 +290,8 @@ public class ArrayExtention {
 		}
 	}
 
-	public <O,N> N[] map(O[] arr, Function<O,N> function, IntFunction<N[]> supplier) {
-		N[] result = supplier.apply(arr.length);
+	public <T,R> R[] map(T[] arr, Function<T,R> function, IntFunction<R[]> supplier) {
+		R[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
 			result[i] = function.apply(arr[i]);
 		}
@@ -298,6 +301,30 @@ public class ArrayExtention {
 	@SuppressWarnings("unchecked")
 	public <T> T[] map(T[] arr, UnaryOperator<T> function) {
 		return map(arr, function, length -> (T[]) Array.newInstance(arr.getClass().getComponentType(), length));
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T[] flattened(T[][] arr) {
+		int size = 0;
+		for (T[] a : arr) {
+			size += a.length;
+		}
+		T[] result = (T[]) Array.newInstance(arr.getClass().getComponentType().getComponentType(), size);
+		int i = 0;
+		for (T[] t : arr) {
+			System.arraycopy(t, 0, result, i, t.length);
+			i += t.length;
+		}
+		return result;
+	}
+
+	public <T,R> R[] flatMap(T[] arr, Function<T,R[]> function, IntFunction<R[][]> supplier) {
+		return flattened(map(arr, function, supplier));
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T[] flatMap(T[] arr, Function<T,T[]> function) {
+		return flattened(map(arr, function, length -> (T[][]) Array.newInstance(arr.getClass(), length)));
 	}
 
 	public <T> int[] mapToInt(T[] arr, ToIntFunction<T> function) {
@@ -543,6 +570,24 @@ public class ArrayExtention {
 		return result;
 	}
 
+	public int[] flattened(int[][] arr) {
+		int size = 0;
+		for (int[] a : arr) {
+			size += a.length;
+		}
+		int[] result = new int[size];
+		int i = 0;
+		for (int[] a : arr) {
+			System.arraycopy(a, 0, result, i, a.length);
+			i += a.length;
+		}
+		return result;
+	}
+
+	public int[] flatMap(int[] arr, IntFunction<int[]> function) {
+		return flattened(mapToObj(arr, function, int[][]::new));
+	}
+
 	public <T> T[] mapToObj(int[] arr, IntFunction<T> function, IntFunction<T[]> supplier) {
 		T[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
@@ -786,6 +831,24 @@ public class ArrayExtention {
 		return result;
 	}
 
+	public long[] flattened(long[][] arr) {
+		int size = 0;
+		for (long[] a : arr) {
+			size += a.length;
+		}
+		long[] result = new long[size];
+		int index = 0;
+		for (long[] a : arr) {
+			System.arraycopy(a, 0, result, index, a.length);
+			index += a.length;
+		}
+		return result;
+	}
+
+	public long[] flatMap(long[] arr, LongFunction<long[]> function) {
+		return flattened(mapToObj(arr, function, long[][]::new));
+	}
+
 	public <T> T[] mapToObj(long[] arr, LongFunction<T> function, IntFunction<T[]> supplier) {
 		T[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
@@ -1023,6 +1086,24 @@ public class ArrayExtention {
 			result[i] = function.applyAsDouble(arr[i]);
 		}
 		return result;
+	}
+
+	public double[] flattened(double[][] arr) {
+		int size = 0;
+		for (double[] a : arr) {
+			size += a.length;
+		}
+		double[] result = new double[size];
+		int i = 0;
+		for (double[] a : arr) {
+			System.arraycopy(a, 0, result, i, a.length);
+			i += a.length;
+		}
+		return result;
+	}
+
+	public double[] flatMap(double[] arr, DoubleFunction<double[]> function) {
+		return flattened(mapToObj(arr, function, double[][]::new));
 	}
 
 	public <T> T[] mapToObj(double[] arr, DoubleFunction<T> function, IntFunction<T[]> supplier) {
@@ -1265,6 +1346,24 @@ public class ArrayExtention {
 			result[i] = function.apply(arr[i]);
 		}
 		return result;
+	}
+
+	public char[] flattened(char[][] arr) {
+		int size = 0;
+		for (char[] i : arr) {
+			size += i.length;
+		}
+		char[] result = new char[size];
+		int index = 0;
+		for (char[] i : arr) {
+			System.arraycopy(i, 0, result, index, i.length);
+			index += i.length;
+		}
+		return result;
+	}
+
+	public char[] flatMap(char[] arr, Function<Character,char[]> function) {
+		return flattened(mapToObj(arr, function, char[][]::new));
 	}
 
 	public <T> T[] mapToObj(char[] arr, Function<Character, T> function, IntFunction<T[]> supplier) {
