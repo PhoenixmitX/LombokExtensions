@@ -3,6 +3,7 @@ package de.phoenixmitx.lombokextensions;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import lombok.experimental.UtilityClass;
@@ -36,6 +37,14 @@ public class NullableExtension {
 		if (t != null) {
 			function.accept(t);
 		}
+	}
+
+	public <T> T makeNullIf(T t, boolean condition) {
+		return condition ? null : t;
+	}
+
+	public <T> T makeNullIf(T t, Predicate<T> condition) {
+		return t == null ? null : condition.test(t) ? null : t;
 	}
 
 	public <T,E extends Throwable> T ifNullThrow(T t, Supplier<E> exceptionSupplier) throws E {
