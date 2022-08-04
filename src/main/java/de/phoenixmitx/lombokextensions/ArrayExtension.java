@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ArrayExtention {
+public class ArrayExtension {
 
 	/*
 	 * Implemeted:
