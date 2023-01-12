@@ -1,59 +1,47 @@
 package de.phoenixmitx.lombokextensions;
 
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class StreamExtention {
+public class StreamExtention { // TODO write methods for all types of streams
 
 	// GENERIC STREAMS
 
-	public <T> Stream<T> asStream(T t) {
-		return Stream.of(t);
+	@FunctionalInterface
+	public interface IntReducer<T> {
+		int reduce(T obj, int i);
 	}
 
-	public static <T> Stream<T> concat(Stream<T> t, Stream<T> next) {
-		return Stream.concat(t, next);
+	public <T> int reduceToInt(Stream<T> stream, int i, IntReducer<T> reducer) {
+		int[] result = { i };
+		stream.forEach(ele -> result[0] = reducer.reduce(ele, result[0]));
+		return result[0];
+	}
+
+	public <T> int reduceToInt(Stream<T> stream, IntReducer<T> reducer) {
+		return reduceToInt(stream, 0, reducer);
 	}
 
 	// INT STREAMS
 
-	public static IntStream asStream(int t) {
-		return IntStream.of(t);
-	}
-
-	public static IntStream concat(IntStream t, IntStream next) {
-		return IntStream.concat(t, next);
-	}
-
 	// LONG STREAMS
-
-	public static LongStream asStream(long t) {
-		return LongStream.of(t);
-	}
-
-	public static LongStream concat(LongStream t, LongStream next) {
-		return LongStream.concat(t, next);
-	}
 
 	// DOUBLE STREAMS
 
-	public static DoubleStream asStream(double t) {
-		return DoubleStream.of(t);
-	}
-
-	public static DoubleStream concat(DoubleStream t, DoubleStream next) {
-		return DoubleStream.concat(t, next);
-	}
-
 	// CLASS SPECIFIC STREAMS
 
-	public static <T> Stream<T> asStream(Iterable<T> t) {
-		return StreamSupport.stream(t.spliterator(), false);
+	public String join(Stream<String> stream) {
+		return join(stream, "", "", "");
+	}
+
+	public String join(Stream<String> stream, String delimiter) {
+		return join(stream, delimiter, "", "");
+	}
+
+	public String join(Stream<String> stream, String delimiter, String prefix, String suffix) {
+		return stream.collect(Collectors.joining(delimiter, prefix, suffix));
 	}
 }
