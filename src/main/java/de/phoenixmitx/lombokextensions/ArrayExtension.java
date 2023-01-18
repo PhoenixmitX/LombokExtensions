@@ -118,7 +118,7 @@ public class ArrayExtension {
 	// GENERIC ARRAYS
 
 	public <T> List<T> toList(T[] arr) {
-		return List.of(arr);
+		return Arrays.asList(arr);
 	}
 
 	public <T> List<T> toModifyableList(T[] arr) {
