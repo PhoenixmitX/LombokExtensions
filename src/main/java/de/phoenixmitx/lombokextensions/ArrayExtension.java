@@ -3,6 +3,7 @@ package de.phoenixmitx.lombokextensions;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -304,6 +306,39 @@ public class ArrayExtension {
 	}
 
 	@SuppressWarnings("unchecked")
+	public <T> T[] filterMap(T[] arr, Function<T, Optional<T>> function) {
+		T[] tmp = (T[]) Array.newInstance(arr.getClass().getComponentType(), arr.length);
+		int i = 0;
+		for (T ele : arr) {
+			Optional<T> optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.get();
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public <T> T[] filterMap(T[] arr, Predicate<T> condition, UnaryOperator<T> function) {
+		T[] tmp = Arrays.copyOf(arr, arr.length);
+		int i = 0;
+		for (T ele : arr) {
+			if (condition.test(ele)) tmp[i++] = function.apply(ele);
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public <T> T[] mapFilter(T[] arr, UnaryOperator<T> function, Predicate<T> condition) {
+		T[] tmp = Arrays.copyOf(arr, arr.length);
+		int i = 0;
+		for (T ele : arr) {
+			T mapped = function.apply(ele);
+			if (condition.test(mapped)) tmp[i++] = mapped;
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	@SuppressWarnings("unchecked")
 	public <T> T[] flattened(T[][] arr) {
 		int size = 0;
 		for (T[] a : arr) {
@@ -383,6 +418,27 @@ public class ArrayExtension {
 			result[i] = arr[arr.length - i - 1];
 		}
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T[] distinct(T[] arr) {
+		Set<T> set = new HashSet<>();
+		for (T ele : arr) {
+			set.add(ele);
+		}
+		return set.toArray((T[]) Array.newInstance(arr.getClass().getComponentType(), set.size()));
+	}
+
+	public <T> T[] distinctSorted(T[] arr) {
+		int j = 0;
+		Arrays.sort(arr);
+		for (int i = 0, n = arr.length; i < n; i++) {
+			if (i == 0 || Objects.equals(arr[i], arr[i - 1])) {
+				arr[j++] = arr[i];
+			}
+		}
+		if (j == arr.length) return arr;
+		return Arrays.copyOf(arr, j);
 	}
 
 	// INT ARRAYS
@@ -570,6 +626,38 @@ public class ArrayExtension {
 		return result;
 	}
 
+	public int[] filterMap(int[] arr, IntFunction<OptionalInt> function) {
+		int[] tmp = new int[arr.length];
+		int i = 0;
+		for (int ele : arr) {
+			OptionalInt optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsInt();
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public int[] filterMap(int[] arr, IntPredicate condition, IntUnaryOperator function) {
+		int[] tmp = new int[arr.length];
+		int i = 0;
+		for (int ele : arr) {
+			if (condition.test(ele)) tmp[i++] = function.applyAsInt(ele);
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public int[] mapFilter(int[] arr, IntUnaryOperator function, IntPredicate condition) {
+		int[] tmp = new int[arr.length];
+		int i = 0;
+		for (int ele : arr) {
+			int mapped = function.applyAsInt(ele);
+			if (condition.test(mapped)) tmp[i++] = mapped;
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
 	public int[] flattened(int[][] arr) {
 		int size = 0;
 		for (int[] a : arr) {
@@ -643,6 +731,28 @@ public class ArrayExtension {
 			result[i] = arr[arr.length - i - 1];
 		}
 		return result;
+	}
+
+	public int[] distinct(int[] arr) {
+		int[] tmp = new int[arr.length];
+		int i = 0;
+		for (int ele : arr) {
+			if (indexOf(tmp, ele) == -1) tmp[i++] = ele;
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public int[] distinctSorted(int[] arr) {
+		int[] tmp = new int[arr.length];
+		int j = 0;
+		for (int i = 0, n = arr.length; i < n; i++) {
+			if (i == 0 || arr[i] != arr[i - 1]) {
+					arr[j++] = arr[i];
+			}
+		}
+		if (tmp.length == j) return tmp;
+		return Arrays.copyOf(arr, j);
 	}
 
 	// LONG ARRAYS
@@ -831,6 +941,38 @@ public class ArrayExtension {
 		return result;
 	}
 
+	public long[] filterMap(long[] arr, LongFunction<OptionalLong> function) {
+		long[] tmp = new long[arr.length];
+		int i = 0;
+		for (long ele : arr) {
+			OptionalLong optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsLong();
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public long[] filterMap(long[] arr, LongPredicate condition, LongUnaryOperator function) {
+		long[] tmp = new long[arr.length];
+		int i = 0;
+		for (long ele : arr) {
+			if (condition.test(ele)) tmp[i++] = function.applyAsLong(ele);
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public long[] mapFilter(long[] arr, LongUnaryOperator function, LongPredicate condition) {
+		long[] tmp = new long[arr.length];
+		int i = 0;
+		for (long ele : arr) {
+			long mapped = function.applyAsLong(ele);
+			if (condition.test(mapped)) tmp[i++] = mapped;
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
 	public long[] flattened(long[][] arr) {
 		int size = 0;
 		for (long[] a : arr) {
@@ -904,6 +1046,28 @@ public class ArrayExtension {
 			result[i] = arr[arr.length - i - 1];
 		}
 		return result;
+	}
+
+	public long[] distinct(long[] arr) {
+		long[] tmp = new long[arr.length];
+		int i = 0;
+		for (long ele : arr) {
+			if (indexOf(tmp, ele) == -1) tmp[i++] = ele;
+		}
+		if (tmp.length == i) return tmp;
+		long[] result = new long[i];
+		System.arraycopy(tmp, 0, result, 0, i);
+		return result;
+	}
+
+	public long[] distinctSorted(long[] arr) {
+		long[] tmp = new long[arr.length];
+		int j = 0;
+		for (long ele : arr) {
+			if (Arrays.binarySearch(tmp, 0, j, ele) < 0) tmp[j++] = ele;
+		}
+		if (tmp.length == j) return tmp;
+		return Arrays.copyOf(tmp, j);
 	}
 
 	// DOUBLE ARRAYS
@@ -1088,6 +1252,38 @@ public class ArrayExtension {
 		return result;
 	}
 
+	public double[] filterMap(double[] arr, DoubleFunction<OptionalDouble> function) {
+		double[] tmp = new double[arr.length];
+		int i = 0;
+		for (double ele : arr) {
+			OptionalDouble optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsDouble();
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public double[] filterMap(double[] arr, DoublePredicate condition, DoubleUnaryOperator function) {
+		double[] tmp = new double[arr.length];
+		int i = 0;
+		for (double ele : arr) {
+			if (condition.test(ele)) tmp[i++] = function.applyAsDouble(ele);
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public double[] mapFilter(double[] arr, DoubleUnaryOperator function, DoublePredicate condition) {
+		double[] tmp = new double[arr.length];
+		int i = 0;
+		for (double ele : arr) {
+			double mapped = function.applyAsDouble(ele);
+			if (condition.test(mapped)) tmp[i++] = mapped;
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
 	public double[] flattened(double[][] arr) {
 		int size = 0;
 		for (double[] a : arr) {
@@ -1161,6 +1357,28 @@ public class ArrayExtension {
 			result[i] = arr[arr.length - i - 1];
 		}
 		return result;
+	}
+
+	public double[] distinct(double[] arr) {
+		double[] tmp = new double[arr.length];
+		int i = 0;
+		for (double ele : arr) {
+			if (indexOf(tmp, ele) == -1) tmp[i++] = ele;
+		}
+		if (tmp.length == i) return tmp;
+		double[] result = new double[i];
+		System.arraycopy(tmp, 0, result, 0, i);
+		return result;
+	}
+
+	public double[] distinctSorted(double[] arr) {
+		double[] tmp = new double[arr.length];
+		int j = 0;
+		for (double ele : arr) {
+			if (Arrays.binarySearch(tmp, 0, j, ele) < 0) tmp[j++] = ele;
+		}
+		if (tmp.length == j) return tmp;
+		return Arrays.copyOf(tmp, j);
 	}
 
 	// CHAR
@@ -1348,6 +1566,38 @@ public class ArrayExtension {
 		return result;
 	}
 
+	public char[] filterMap(char[] arr, Function<Character, Optional<Character>> function) {
+		char[] tmp = new char[arr.length];
+		int i = 0;
+		for (char ele : arr) {
+			Optional<Character> optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.get();
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public char[] filterMap(char[] arr, Predicate<Character> condition, UnaryOperator<Character> function) {
+		char[] tmp = new char[arr.length];
+		int i = 0;
+		for (char ele : arr) {
+			if (condition.test(ele)) tmp[i++] = function.apply(ele);
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
+	public char[] mapFilter(char[] arr, UnaryOperator<Character> function, Predicate<Character> condition) {
+		char[] tmp = new char[arr.length];
+		int i = 0;
+		for (char ele : arr) {
+			char mapped = function.apply(ele);
+			if (condition.test(mapped)) tmp[i++] = mapped;
+		}
+		if (tmp.length == i) return tmp;
+		return Arrays.copyOf(tmp, i);
+	}
+
 	public char[] flattened(char[][] arr) {
 		int size = 0;
 		for (char[] i : arr) {
@@ -1421,6 +1671,28 @@ public class ArrayExtension {
 			result[i] = arr[arr.length - i - 1];
 		}
 		return result;
+	}
+
+	public char[] distinct(char[] arr) {
+		char[] tmp = new char[arr.length];
+		int i = 0;
+		for (char ele : arr) {
+			if (!contains(tmp, ele)) tmp[i++] = ele;
+		}
+		if (tmp.length == i) return tmp;
+		char[] result = new char[i];
+		System.arraycopy(tmp, 0, result, 0, i);
+		return result;
+	}
+
+	public char[] distinctSorted(char[] arr) {
+		char[] tmp = new char[arr.length];
+		int j = 0;
+		for (char ele : arr) {
+			if (!contains(tmp, ele)) tmp[j++] = ele;
+		}
+		if (tmp.length == j) return tmp;
+		return Arrays.copyOf(tmp, j);
 	}
 
 	// CLASS SPECIFIC ARRAYS
