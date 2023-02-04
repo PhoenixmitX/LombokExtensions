@@ -57,7 +57,7 @@ public class ArrayExtension {
 	 * Implemeted:
 	 * 
 	 * [OBJ] List<T> toList()
-	 * [OBJ] List<T> toModifyableList()
+	 * [OBJ] List<T> toMutableleList()
 	 * 
 	 * [OBJ] Iterator<T> iterator()
 	 * [OBJ] Spliterator<T> spliterator()
@@ -123,7 +123,7 @@ public class ArrayExtension {
 		return Arrays.asList(arr);
 	}
 
-	public <T> List<T> toModifyableList(T[] arr) {
+	public <T> List<T> toMutableList(T[] arr) {
 		return new ArrayList<>(toList(arr));
 	}
 
@@ -149,6 +149,10 @@ public class ArrayExtension {
 		return newArr;
 	}
 
+	public <T> T[] add(T[] arr, T... c) {
+		return addAll(arr, c);
+	}
+	
 	public <T> T[] addAll(T[] arr, T[] c) {
 		T[] newArr = Arrays.copyOf(arr, arr.length + c.length);
 		System.arraycopy(c, 0, newArr, arr.length, c.length);
