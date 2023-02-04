@@ -13,10 +13,6 @@ jobs:
   "java":
 
     runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: "dc-bot"
 
     steps:
     - uses: actions/checkout@v3
@@ -29,4 +25,3 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
-        build-root-directory: "dc-bot"
