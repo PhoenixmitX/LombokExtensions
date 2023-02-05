@@ -148,7 +148,7 @@ class ArrayExtensionSimilarityTest {
   
   private Class<?> getSimilarParameterType(Class<?>[] baseClasses, Class<?>[] similarClasses, Class<?> baseParametersType) {
     if (baseParametersType.isArray()) {
-      return getSimilarParameterType(baseClasses, similarClasses, baseParametersType.getComponentType()).arrayType();
+      return TestUtils.getArrayType(getSimilarParameterType(baseClasses, similarClasses, baseParametersType.getComponentType()));
     }
     int index = baseClasses.indexOf(baseParametersType);
     if (index == -1) {
