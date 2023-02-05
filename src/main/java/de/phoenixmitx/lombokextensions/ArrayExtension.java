@@ -5,10 +5,12 @@ import de.phoenixmitx.lombokextensions.array.DoubleArrayExtension;
 import de.phoenixmitx.lombokextensions.array.GenericArrayExtension;
 import de.phoenixmitx.lombokextensions.array.IntArrayExtension;
 import de.phoenixmitx.lombokextensions.array.LongArrayExtension;
+import de.phoenixmitx.lombokextensions.codegen.delegate.StaticDelegate;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ArrayExtension implements GenericArrayExtension, CharArrayExtension, IntArrayExtension, LongArrayExtension, DoubleArrayExtension {
+@StaticDelegate({ GenericArrayExtension.class, IntArrayExtension.class, LongArrayExtension.class, DoubleArrayExtension.class, CharArrayExtension.class })
+public class ArrayExtension {
 
 	/*
 	 * Implemeted:
@@ -67,6 +69,9 @@ public class ArrayExtension implements GenericArrayExtension, CharArrayExtension
 	 * 
 	 * TODO:
 	 * 
+	 * T sum()
+	 * Optional<T> last()
+	 * 
 	 * FloatArrayExtension, ShortArrayExtension, BooleanArrayExtension, ByteArrayExtension
 	 * 
 	 * update list of implemented methods
@@ -78,6 +83,8 @@ public class ArrayExtension implements GenericArrayExtension, CharArrayExtension
 	 * add all methods from java.util.Arrays
 	 * use java.util.Arrays to implement methods where possible
 	 * test whats the fastes way to add elements into to an array
+	 * 
+	 * FIXME: make sure that all methods for primitive arrays are useable from this class
 	 */
 
 	// CLASS SPECIFIC ARRAYS

@@ -15,25 +15,83 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+	codegen {
+		java {
+			srcDir 'src/codegen/java'
+		}
+	}
+}
+
 dependencies {
-	compileOnly 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	compileOnly 'org.projectlombok:lombok:1.18.26'
+	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+	
+	// codegen
+	codegenCompileOnly 'org.projectlombok:lombok:1.18.26'
+	codegenCompileOnly files("${System.getProperty('java.home')}/lib/tools.jar") // TODO really needed?
+	codegenAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+	codegenImplementation 'org.javassist:javassist:3.29.2-GA'
+	
+	// test
+	testCompileOnly 'org.projectlombok:lombok:1.18.26'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+	
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+	classifier = 'sources'
+	from sourceSets.main.allSource
 }
 
 artifacts {
-    archives sourcesJar
+	archives sourcesJar
+}
+
+test {
+	useJUnitPlatform()
 }
 
 publishing {
-    publications {
-        testing(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-        }
-    }
+	publications {
+		testing(MavenPublication) {
+			from components.java
+			artifact sourcesJar
+		}
+	}
+}
+
+task codegen(type: JavaCompile) {
+  source = sourceSets.codegen.java
+  classpath = sourceSets.codegen.compileClasspath
+  destinationDirectory = file("$buildDir/classes/java/codegen")
+}
+
+task codegenJar (type: Jar) {
+	dependsOn compileCodegenJava
+	from {
+		codegen.destinationDirectory
+	}
+	from {
+		configurations.codegenRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	archiveFileName = "LombokExtensions-${project.version}-codegen.jar"
+	manifest {
+		attributes(
+			"Premain-Class": "de.phoenixmitx.lombokextensions.codegen.CodegenAgent",
+			"Can-Redefine-Classes": "true",
+			"Can-Retransform-Classes": "true",
+		)
+	}
+}
+
+compileJava {
+  dependsOn codegenJar
+  source = sourceSets.main.java
+  classpath = sourceSets.main.compileClasspath + sourceSets.codegen.output
+
+	options.fork = true
+	options.forkOptions.jvmArgs += "-javaagent:$codegenJar.archivePath".toString()
 }
