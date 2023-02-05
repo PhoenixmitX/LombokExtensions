@@ -29,7 +29,6 @@ dependencies {
 	
 	// codegen
 	codegenCompileOnly 'org.projectlombok:lombok:1.18.26'
-	codegenCompileOnly files("${System.getProperty('java.home')}/lib/tools.jar") // TODO really needed?
 	codegenAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
 
 	codegenImplementation 'org.javassist:javassist:3.29.2-GA'
