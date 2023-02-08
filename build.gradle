@@ -49,10 +49,6 @@ artifacts {
 	archives sourcesJar
 }
 
-test {
-	useJUnitPlatform()
-}
-
 publishing {
 	publications {
 		testing(MavenPublication) {
@@ -79,6 +75,7 @@ task codegenJar (type: Jar) {
 	archiveFileName = "LombokExtensions-${project.version}-codegen.jar"
 	manifest {
 		attributes(
+			"Main-Class": "de.phoenixmitx.lombokextensions.codegen.CodegenAgent",
 			"Premain-Class": "de.phoenixmitx.lombokextensions.codegen.CodegenAgent",
 			"Can-Redefine-Classes": "true",
 			"Can-Retransform-Classes": "true",
@@ -87,10 +84,21 @@ task codegenJar (type: Jar) {
 }
 
 compileJava {
-  dependsOn codegenJar
+  dependsOn codegen
   source = sourceSets.main.java
   classpath = sourceSets.main.compileClasspath + sourceSets.codegen.output
+}
 
-	options.fork = true
-	options.forkOptions.jvmArgs += "-javaagent:$codegenJar.archivePath".toString()
+task recompileJava(type: JavaExec) {
+	dependsOn codegenJar, compileJava
+	classpath = sourceSets.main.output + sourceSets.codegen.output + sourceSets.codegen.compileClasspath
+	jvmArgs += "-javaagent:$codegenJar.archivePath".toString()
+	main = "de.phoenixmitx.lombokextensions.codegen.CodegenAgent"
+}
+
+compileJava.finalizedBy recompileJava
+
+test {
+	dependsOn codegenJar, compileJava
+	useJUnitPlatform()
 }

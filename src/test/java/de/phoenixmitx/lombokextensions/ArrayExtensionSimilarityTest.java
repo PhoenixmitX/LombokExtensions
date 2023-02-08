@@ -38,7 +38,6 @@ import java.util.function.UnaryOperator;
 
 import org.junit.jupiter.api.Test;
 
-import de.phoenixmitx.lombokextensions.ArrayExtension;
 import de.phoenixmitx.lombokextensions.array.CharArrayExtension;
 import de.phoenixmitx.lombokextensions.array.DoubleArrayExtension;
 import de.phoenixmitx.lombokextensions.array.GenericArrayExtension;
@@ -112,7 +111,7 @@ class ArrayExtensionSimilarityTest {
   }
 
   @Test
-  public void testAllClassesHaveSimilarMethods() throws SecurityException {
+  void testAllClassesHaveSimilarMethods() throws SecurityException {
     for (Class<?>[] baseClasses : similarPrimitivClasses) {
       Class<?> baseClass = baseClasses[0];
       if (baseClass == IntArrayExtension.class) {
