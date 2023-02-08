@@ -20,7 +20,7 @@ public class StaticDelegateTransformer implements ClassFileTransformer {
   private final ClassPool pool = ClassPool.getDefault();
 
   @Override
-  public byte[] transform(Module module, ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+  public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
     if (!className.startsWith("de/phoenixmitx/lombokextensions/")) {
       return classfileBuffer;
     }
