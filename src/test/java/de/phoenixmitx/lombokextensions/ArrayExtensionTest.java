@@ -10,6 +10,6 @@ public class ArrayExtensionTest {
   public void testStaticDelegateWorked() {
     // This test is just here to make sure the static delegate transformer worked
     // If it didn't, the class would only contain a few methods
-    assertTrue(ArrayExtension.class.getDeclaredMethods().length > 100);
+    assertTrue(ArrayExtension.class.getDeclaredMethods().length > 100, "Static delegate transformer didn't work (only " + ArrayExtension.class.getDeclaredMethods().length + " methods found)");
   }
 }

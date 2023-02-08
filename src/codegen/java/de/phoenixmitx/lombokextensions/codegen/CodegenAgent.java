@@ -23,6 +23,12 @@ public class CodegenAgent {
     }
     System.out.println("CodegenAgent: Transforming classes");
     // Initalize the class to trigger the transformer
-    Class.forName("de.phoenixmitx.lombokextensions.ArrayExtension");
+    try {
+      Class.forName("de.phoenixmitx.lombokextensions.ArrayExtension");
+    } catch (Exception e) {
+      // Print the stacktrace to the console
+      e.printStackTrace();
+      throw e;
+    }
   }
 }
