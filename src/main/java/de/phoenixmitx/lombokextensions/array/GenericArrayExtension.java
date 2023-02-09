@@ -31,7 +31,7 @@ public class GenericArrayExtension {
 		return Arrays.asList(arr);
 	}
 
-	public <T> List<T> toModifyableList(T[] arr) {
+	public <T> List<T> toMutableList(T[] arr) {
 		return new ArrayList<>(toList(arr));
 	}
 

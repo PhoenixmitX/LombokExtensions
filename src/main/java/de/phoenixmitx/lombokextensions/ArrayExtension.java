@@ -16,7 +16,7 @@ public class ArrayExtension {
 	 * Implemeted:
 	 * 
 	 * [OBJ] List<T> toList()
-	 * [OBJ] List<T> toModifyableList()
+	 * [OBJ] List<T> toMutableList()
 	 * 
 	 * [OBJ] Iterator<T> iterator()
 	 * [OBJ] Spliterator<T> spliterator()

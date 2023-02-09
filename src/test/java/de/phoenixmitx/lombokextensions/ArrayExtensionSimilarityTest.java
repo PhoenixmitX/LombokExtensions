@@ -82,7 +82,7 @@ class ArrayExtensionSimilarityTest {
 
       // only implemented for generic types
       case "toList":
-      case "toModifyableList":
+      case "toMutableList":
       case "iterator":
       case "spliterator":
         return true;
