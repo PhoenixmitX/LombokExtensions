@@ -76,15 +76,12 @@ public class ArrayExtension {
 	 * 
 	 * update list of implemented methods
 	 * write tests for all methods
-	 * write test to gurantee simiarity accross all primitive types
 	 * 
 	 * add javadoc to explain the difference to the stream API
 	 * add javadoc for each method
 	 * add all methods from java.util.Arrays
 	 * use java.util.Arrays to implement methods where possible
 	 * test whats the fastes way to add elements into to an array
-	 * 
-	 * FIXME: make sure that all methods for primitive arrays are useable from this class
 	 */
 
 	// CLASS SPECIFIC ARRAYS
