@@ -69,7 +69,6 @@ public class ArrayExtension {
 	 * 
 	 * TODO:
 	 * 
-	 * T sum()
 	 * Optional<T> last()
 	 * 
 	 * FloatArrayExtension, ShortArrayExtension, BooleanArrayExtension, ByteArrayExtension

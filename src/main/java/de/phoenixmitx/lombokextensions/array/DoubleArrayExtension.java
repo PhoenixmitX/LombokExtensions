@@ -303,6 +303,14 @@ public class DoubleArrayExtension {
 		return result;
 	}
 
+	public double sum(double[] arr) {
+		double result = 0;
+		for (double ele : arr) {
+			result += ele;
+		}
+		return result;
+	}
+
 	public double[] reverse(double[] arr) {
 		double[] result = new double[arr.length];
 		for (int i = 0; i < arr.length; i++) {

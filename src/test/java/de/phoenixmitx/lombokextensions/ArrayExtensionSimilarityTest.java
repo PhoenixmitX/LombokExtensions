@@ -97,6 +97,10 @@ class ArrayExtensionSimilarityTest {
       case "unboxed":
         return (testedType == Object.class);
 
+      // numbers only
+      case "sum":
+        return isNumber(originalType) && !isNumber(testedType);
+
       // generic types in primitive extensions cross compatibility with generic extension
       case "reduce": {
           // only incompatible if the last parameter is a BiFunction
@@ -108,6 +112,10 @@ class ArrayExtensionSimilarityTest {
     }
 
     return false;
+  }
+
+  private boolean isNumber(Class<?> type) {
+    return type == int.class || type == long.class || type == double.class;
   }
 
   @Test

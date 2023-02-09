@@ -299,6 +299,14 @@ public class IntArrayExtension {
 		return result;
 	}
 
+	public long sum(int[] arr) {
+		long result = 0;
+		for (int ele : arr) {
+			result += ele;
+		}
+		return result;
+	}
+
 	public int[] reverse(int[] arr) {
 		int[] result = new int[arr.length];
 		for (int i = 0; i < arr.length; i++) {

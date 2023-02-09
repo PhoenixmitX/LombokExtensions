@@ -301,6 +301,14 @@ public class LongArrayExtension {
 		return result;
 	}
 
+	public long sum(long[] arr) {
+		long result = 0;
+		for (long ele : arr) {
+			result += ele;
+		}
+		return result;
+	}
+
 	public long[] reverse(long[] arr) {
 		long[] result = new long[arr.length];
 		for (int i = 0; i < arr.length; i++) {
