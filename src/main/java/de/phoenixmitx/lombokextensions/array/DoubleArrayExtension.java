@@ -38,6 +38,16 @@ public class DoubleArrayExtension {
 		return result;
 	}
 
+	public OptionalDouble first(double[] arr) {
+		if (arr.length == 0) return OptionalDouble.empty();
+		return OptionalDouble.of(arr[0]);
+	}
+
+	public OptionalDouble last(double[] arr) {
+		if (arr.length == 0) return OptionalDouble.empty();
+		return OptionalDouble.of(arr[arr.length - 1]);
+	}
+
 	public double[] add(double[] arr, double d) {
 		double[] result = Arrays.copyOf(arr, arr.length + 1);
 		result[arr.length] = d;

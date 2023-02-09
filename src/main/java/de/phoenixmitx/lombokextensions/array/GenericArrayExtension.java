@@ -47,6 +47,16 @@ public class GenericArrayExtension {
 		return Stream.of(arr);
 	}
 
+	public <T> Optional<T> first(T[] arr) {
+		if (arr.length == 0) return Optional.empty();
+		return Optional.of(arr[0]);
+	}
+
+	public <T> Optional<T> last(T[] arr) {
+		if (arr.length == 0) return Optional.empty();
+		return Optional.of(arr[arr.length - 1]);
+	}
+
 	public <T> T[] add(T[] arr, T element) {
 		return add(arr, arr.length, element);
 	}

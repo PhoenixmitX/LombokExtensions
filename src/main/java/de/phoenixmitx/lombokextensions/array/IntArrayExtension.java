@@ -37,6 +37,16 @@ public class IntArrayExtension {
 		return result;
 	}
 
+	public OptionalInt first(int[] arr) {
+		if (arr.length == 0) return OptionalInt.empty();
+		return OptionalInt.of(arr[0]);
+	}
+
+	public OptionalInt last(int[] arr) {
+		if (arr.length == 0) return OptionalInt.empty();
+		return OptionalInt.of(arr[arr.length - 1]);
+	}
+
 	public int[] add(int[] arr, int i) {
 		int[] result = Arrays.copyOf(arr, arr.length + 1);
 		result[arr.length] = i;

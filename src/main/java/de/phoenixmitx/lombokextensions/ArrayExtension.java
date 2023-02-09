@@ -69,7 +69,8 @@ public class ArrayExtension {
 	 * 
 	 * TODO:
 	 * 
-	 * Optional<T> last()
+	 * Optional<T> findFirst(Predicate<T> condition)
+	 * Optional<T> findLast(Predicate<T> condition)
 	 * 
 	 * FloatArrayExtension, ShortArrayExtension, BooleanArrayExtension, ByteArrayExtension
 	 * 

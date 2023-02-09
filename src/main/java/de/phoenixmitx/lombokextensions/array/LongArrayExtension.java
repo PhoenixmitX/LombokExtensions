@@ -38,6 +38,16 @@ public class LongArrayExtension {
 		return result;
 	}
 
+	public OptionalLong first(long[] arr) {
+		if (arr.length == 0) return OptionalLong.empty();
+		return OptionalLong.of(arr[0]);
+	}
+
+	public OptionalLong last(long[] arr) {
+		if (arr.length == 0) return OptionalLong.empty();
+		return OptionalLong.of(arr[arr.length - 1]);
+	}
+
 	public long[] add(long[] arr, long l) {
 		long[] result = Arrays.copyOf(arr, arr.length + 1);
 		result[arr.length] = l;

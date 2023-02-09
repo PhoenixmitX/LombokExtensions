@@ -38,6 +38,16 @@ public class CharArrayExtension {
 		return new String(arr);
 	}
 
+	public Optional<Character> first(char[] arr) {
+		if (arr.length == 0) return Optional.empty();
+		return Optional.of(arr[0]);
+	}
+
+	public Optional<Character> last(char[] arr) {
+		if (arr.length == 0) return Optional.empty();
+		return Optional.of(arr[arr.length - 1]);
+	}
+
 	public char[] add(char[] arr, char c) {
 		char[] result = Arrays.copyOf(arr, arr.length + 1);
 		result[arr.length] = c;
