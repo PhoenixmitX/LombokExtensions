@@ -14,7 +14,7 @@ public class CodegenAgent {
   public static void premain(String args, Instrumentation inst) {
     System.out.println("CodegenAgent: Initalizing transformer");
     StaticDelegateTransformer transformer = new StaticDelegateTransformer();
-    inst.addTransformer(new JavaAgentTransformer(transformer), true);
+    inst.addTransformer(new JavaAgentTransformer(transformer));
     transformerInitialized = true;
   }
 

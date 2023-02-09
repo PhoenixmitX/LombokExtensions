@@ -11,16 +11,16 @@ archivesBaseName = "LombokExtensions"
 version = "1.0.3"
 description = "A library for lomboks ExtensionMethods"
 
-repositories {
-	mavenCentral()
-}
-
 sourceSets {
 	codegen {
 		java {
 			srcDir 'src/codegen/java'
 		}
 	}
+}
+
+repositories {
+	mavenCentral()
 }
 
 dependencies {
@@ -45,6 +45,36 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.allSource
 }
 
+task codegenJar (type: Jar) {
+	dependsOn compileCodegenJava
+	from { configurations.codegenRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+
+	archiveFileName = "LombokExtensions-${project.version}-codegen.jar"
+	manifest {
+		attributes(
+			"Premain-Class": "de.phoenixmitx.lombokextensions.codegen.CodegenAgent",
+		)
+	}
+}
+
+task recompileJava(type: JavaExec) {
+	dependsOn codegenJar, compileJava
+	classpath = sourceSets.main.output + sourceSets.codegen.output + sourceSets.codegen.compileClasspath
+	jvmArgs += "-javaagent:$codegenJar.archivePath".toString()
+	mainClass = "de.phoenixmitx.lombokextensions.codegen.CodegenAgent"
+}
+
+compileJava {
+  dependsOn compileCodegenJava
+	finalizedBy recompileJava
+  classpath += sourceSets.codegen.output
+}
+
+
+test {
+	useJUnitPlatform()
+}
+
 artifacts {
 	archives sourcesJar
 }
@@ -56,49 +86,4 @@ publishing {
 			artifact sourcesJar
 		}
 	}
-}
-
-task codegen(type: JavaCompile) {
-  source = sourceSets.codegen.java
-  classpath = sourceSets.codegen.compileClasspath
-  destinationDirectory = file("$buildDir/classes/java/codegen")
-}
-
-task codegenJar (type: Jar) {
-	dependsOn compileCodegenJava
-	from {
-		codegen.destinationDirectory
-	}
-	from {
-		configurations.codegenRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-	}
-	archiveFileName = "LombokExtensions-${project.version}-codegen.jar"
-	manifest {
-		attributes(
-			"Main-Class": "de.phoenixmitx.lombokextensions.codegen.CodegenAgent",
-			"Premain-Class": "de.phoenixmitx.lombokextensions.codegen.CodegenAgent",
-			"Can-Redefine-Classes": "true",
-			"Can-Retransform-Classes": "true",
-		)
-	}
-}
-
-compileJava {
-  dependsOn codegen
-  source = sourceSets.main.java
-  classpath = sourceSets.main.compileClasspath + sourceSets.codegen.output
-}
-
-task recompileJava(type: JavaExec) {
-	dependsOn codegenJar, compileJava
-	classpath = sourceSets.main.output + sourceSets.codegen.output + sourceSets.codegen.compileClasspath
-	jvmArgs += "-javaagent:$codegenJar.archivePath".toString()
-	mainClass = "de.phoenixmitx.lombokextensions.codegen.CodegenAgent"
-}
-
-compileJava.finalizedBy recompileJava
-
-test {
-	dependsOn codegenJar, compileJava
-	useJUnitPlatform()
 }
