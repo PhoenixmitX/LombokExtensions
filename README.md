@@ -71,4 +71,4 @@ If you're interested in contributing to LombokExtensions, we'd love to have your
 
 ## License
 
-LombokExtensions is licensed under the [MIT License](LICENSE).
+LombokExtensions is licensed under the [MIT License](LICENSE.md).
