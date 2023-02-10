@@ -1,5 +1,7 @@
 package de.phoenixmitx.lombokextensions;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.lang.reflect.Method;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -38,22 +40,30 @@ import java.util.function.UnaryOperator;
 
 import org.junit.jupiter.api.Test;
 
+import de.phoenixmitx.lombokextensions.array.BooleanArrayExtension;
+import de.phoenixmitx.lombokextensions.array.ByteArrayExtension;
 import de.phoenixmitx.lombokextensions.array.CharArrayExtension;
 import de.phoenixmitx.lombokextensions.array.DoubleArrayExtension;
+import de.phoenixmitx.lombokextensions.array.FloatArrayExtension;
 import de.phoenixmitx.lombokextensions.array.GenericArrayExtension;
 import de.phoenixmitx.lombokextensions.array.IntArrayExtension;
 import de.phoenixmitx.lombokextensions.array.LongArrayExtension;
+import de.phoenixmitx.lombokextensions.array.ShortArrayExtension;
 import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod({ ArrayExtension.class, GenericArrayExtension.class })
 class ArrayExtensionSimilarityTest {
   
   private Class<?>[][] similarPrimitivClasses = {
-    {IntArrayExtension.class,     int.class,    Integer.class,    IntPredicate.class,     IntFunction.class,    IntConsumer.class,    IntSupplier.class,    IntUnaryOperator.class,     IntBinaryOperator.class,    null,                       IntToLongFunction.class,    IntToDoubleFunction.class},
-    {LongArrayExtension.class,    long.class,   Long.class,       LongPredicate.class,    LongFunction.class,   LongConsumer.class,   LongSupplier.class,   LongUnaryOperator.class,    LongBinaryOperator.class,   LongToIntFunction.class,    null,                       LongToDoubleFunction.class},
-    {DoubleArrayExtension.class,  double.class, Double.class,     DoublePredicate.class,  DoubleFunction.class, DoubleConsumer.class, DoubleSupplier.class, DoubleUnaryOperator.class,  DoubleBinaryOperator.class, DoubleToIntFunction.class,  DoubleToLongFunction.class, null},
-    {CharArrayExtension.class,    char.class,   Character.class,  Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,        BinaryOperator.class,       ToIntFunction.class,        ToLongFunction.class,       ToDoubleFunction.class},
-    {GenericArrayExtension.class, Object.class, Object.class,     Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,        BinaryOperator.class,       ToIntFunction.class,        ToLongFunction.class,       ToDoubleFunction.class},
+    { IntArrayExtension.class,     int.class,     Integer.class,    IntPredicate.class,     IntFunction.class,    IntConsumer.class,    IntSupplier.class,    IntUnaryOperator.class,    IntBinaryOperator.class,    null,                      IntToLongFunction.class,    IntToDoubleFunction.class  },
+    { LongArrayExtension.class,    long.class,    Long.class,       LongPredicate.class,    LongFunction.class,   LongConsumer.class,   LongSupplier.class,   LongUnaryOperator.class,   LongBinaryOperator.class,   LongToIntFunction.class,   null,                       LongToDoubleFunction.class },
+    { DoubleArrayExtension.class,  double.class,  Double.class,     DoublePredicate.class,  DoubleFunction.class, DoubleConsumer.class, DoubleSupplier.class, DoubleUnaryOperator.class, DoubleBinaryOperator.class, DoubleToIntFunction.class, DoubleToLongFunction.class, null                       },
+    { CharArrayExtension.class,    char.class,    Character.class,  Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,       BinaryOperator.class,       ToIntFunction.class,       ToLongFunction.class,       ToDoubleFunction.class     },
+    { GenericArrayExtension.class, Object.class,  Object.class,     Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,       BinaryOperator.class,       ToIntFunction.class,       ToLongFunction.class,       ToDoubleFunction.class     },
+    { ByteArrayExtension.class,    byte.class,    Byte.class,       Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,       BinaryOperator.class,       ToIntFunction.class,       ToLongFunction.class,       ToDoubleFunction.class     },
+    { BooleanArrayExtension.class, boolean.class, Boolean.class,    Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,       BinaryOperator.class,       ToIntFunction.class,       ToLongFunction.class,       ToDoubleFunction.class     },
+    { FloatArrayExtension.class,   float.class,   Float.class,      Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,       BinaryOperator.class,       ToIntFunction.class,       ToLongFunction.class,       ToDoubleFunction.class     },
+    { ShortArrayExtension.class,   short.class,   Short.class,      Predicate.class,        Function.class,       Consumer.class,       Supplier.class,       UnaryOperator.class,       BinaryOperator.class,       ToIntFunction.class,       ToLongFunction.class,       ToDoubleFunction.class     }
   };
 
   private boolean isMethodExcluded(Class<?> originalType, Class<?> testedType, Method originalMethod) {
@@ -72,9 +82,9 @@ class ArrayExtensionSimilarityTest {
       case "mapToLong": return testedType == long.class;
       case "mapToDouble": return testedType == double.class;
 
-      // not implemented for char
+      // only implemented types with native functions
       case "stream":
-        return testedType == char.class;
+        return hasNativeFunctions(originalType) && !hasNativeFunctions(testedType);
       
       // only implemented for char
       case "asString":
@@ -85,17 +95,17 @@ class ArrayExtensionSimilarityTest {
       case "toMutableList":
       case "iterator":
       case "spliterator":
-        return true;
+        return originalType == Object.class;
 
       // map to other generic types is not implemented in primitive extensions
       case "map":
       case "flatMap":
-      return (originalType == Object.class && parameterTypes[parameterTypes.length - 1] == IntFunction.class);
+        return originalType == Object.class && parameterTypes[parameterTypes.length - 1] == IntFunction.class;
       
       // not implemented for genetic types
       case "boxed":
       case "unboxed":
-        return (testedType == Object.class);
+        return testedType == Object.class;
 
       // numbers only
       case "sum":
@@ -118,8 +128,13 @@ class ArrayExtensionSimilarityTest {
     return type == int.class || type == long.class || type == double.class;
   }
 
+  private boolean hasNativeFunctions(Class<?> type) {
+    return type == Object.class || type == int.class || type == long.class || type == double.class;
+  }
+
   @Test
   void testAllClassesHaveSimilarMethods() throws SecurityException {
+    boolean failed = false;
     for (Class<?>[] baseClasses : similarPrimitivClasses) {
       Class<?> baseClass = baseClasses[0];
       if (baseClass == IntArrayExtension.class) {
@@ -142,11 +157,13 @@ class ArrayExtensionSimilarityTest {
             if (isMethodExcluded(baseClasses[1], similarClasses[1], baseMethod)) {
               continue;
             }
-            throw new AssertionError("Method " + baseMethod.getName() + " from " + baseClass.getSimpleName() + " with parameter types " + getClassNames(baseMethod.getParameterTypes()) + " not found in " + similarClass.getSimpleName() + " with parameter types " + getClassNames(similarMethodParameterTypes));
+            failed = true;
+            System.err.println("Method " + baseClass.getSimpleName() + "." + baseMethod.getName() + "(" + getClassNames(baseMethod.getParameterTypes()) + ") not found as " + similarClass.getSimpleName() + "." + baseMethod.getName() + "(" + getClassNames(similarMethodParameterTypes) + ")");
           }
         }
       }
     }
+    assertFalse(failed, "Missing methods in similar classes");
   }
 
   private Class<?>[] getSimilarParameterTypes(Class<?>[] baseClasses, Class<?>[] similarClasses, Class<?>[] baseParametersTypes) {

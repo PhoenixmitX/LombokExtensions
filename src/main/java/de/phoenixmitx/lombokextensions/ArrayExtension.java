@@ -1,15 +1,19 @@
 package de.phoenixmitx.lombokextensions;
 
+import de.phoenixmitx.lombokextensions.array.BooleanArrayExtension;
+import de.phoenixmitx.lombokextensions.array.ByteArrayExtension;
 import de.phoenixmitx.lombokextensions.array.CharArrayExtension;
 import de.phoenixmitx.lombokextensions.array.DoubleArrayExtension;
+import de.phoenixmitx.lombokextensions.array.FloatArrayExtension;
 import de.phoenixmitx.lombokextensions.array.GenericArrayExtension;
 import de.phoenixmitx.lombokextensions.array.IntArrayExtension;
 import de.phoenixmitx.lombokextensions.array.LongArrayExtension;
+import de.phoenixmitx.lombokextensions.array.ShortArrayExtension;
 import de.phoenixmitx.lombokextensions.codegen.delegate.StaticDelegate;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-@StaticDelegate({ GenericArrayExtension.class, IntArrayExtension.class, LongArrayExtension.class, DoubleArrayExtension.class, CharArrayExtension.class })
+@StaticDelegate({ GenericArrayExtension.class, IntArrayExtension.class, LongArrayExtension.class, DoubleArrayExtension.class, CharArrayExtension.class, ByteArrayExtension.class, BooleanArrayExtension.class, FloatArrayExtension.class, ShortArrayExtension.class })
 public class ArrayExtension {
 
 	/*
@@ -71,8 +75,6 @@ public class ArrayExtension {
 	 * 
 	 * Optional<T> findFirst(Predicate<T> condition)
 	 * Optional<T> findLast(Predicate<T> condition)
-	 * 
-	 * FloatArrayExtension, ShortArrayExtension, BooleanArrayExtension, ByteArrayExtension
 	 * 
 	 * update list of implemented methods
 	 * write tests for all methods
