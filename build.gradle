@@ -1,6 +1,7 @@
 plugins {
 	id 'java'
 	id 'maven-publish'
+	id "io.freefair.lombok" version "6.6.1"
 }
 
 sourceCompatibility = 8
@@ -24,21 +25,14 @@ repositories {
 }
 
 dependencies {
-	compileOnly 'org.projectlombok:lombok:1.18.26'
-	annotationProcessor 'org.projectlombok:lombok:1.18.26'
-	
 	// codegen
-	codegenCompileOnly 'org.projectlombok:lombok:1.18.26'
-	codegenAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
-
 	codegenImplementation 'org.javassist:javassist:3.29.2-GA'
 	
 	// test
-	testCompileOnly 'org.projectlombok:lombok:1.18.26'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
-	
 	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
+
+lombok { version = "1.18.26" }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = 'sources'
@@ -69,7 +63,6 @@ compileJava {
 	finalizedBy recompileJava
   classpath += sourceSets.codegen.output
 }
-
 
 test {
 	useJUnitPlatform()
