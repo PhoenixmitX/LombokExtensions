@@ -2,17 +2,17 @@ package de.phoenixmitx.lombokextensions.array;
 
 import java.util.Arrays;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 
 import de.phoenixmitx.lombokextensions.functions.shorts.OptionalShort;
+import de.phoenixmitx.lombokextensions.functions.shorts.ShortBinaryOperator;
+import de.phoenixmitx.lombokextensions.functions.shorts.ShortConsumer;
+import de.phoenixmitx.lombokextensions.functions.shorts.ShortFunction;
+import de.phoenixmitx.lombokextensions.functions.shorts.ShortPredicate;
+import de.phoenixmitx.lombokextensions.functions.shorts.ShortUnaryOperator;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -101,7 +101,7 @@ public class ShortArrayExtension {
 		return arr;
 	}
 
-	public short[] removeIf(short[] arr, Predicate<Short> predicate) {
+	public short[] removeIf(short[] arr, ShortPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -119,7 +119,7 @@ public class ShortArrayExtension {
 		return arr;
 	}
 
-	public short[] retainIf(short[] arr, Predicate<Short> predicate) {
+	public short[] retainIf(short[] arr, ShortPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (!predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -128,21 +128,21 @@ public class ShortArrayExtension {
 		return arr;
 	}
 
-	public OptionalShort find(short[] arr, Predicate<Short> condition) {
+	public OptionalShort find(short[] arr, ShortPredicate condition) {
 		for (short ele : arr) {
 			if (condition.test(ele)) return OptionalShort.of(ele);
 		}
 		return OptionalShort.empty();
 	}
 
-	public int findIndex(short[] arr, Predicate<Short> condition) {
+	public int findIndex(short[] arr, ShortPredicate condition) {
 		for (int i = 0; i < arr.length; i++) {
 			if (condition.test(arr[i])) return i;
 		}
 		return -1;
 	}
 
-	public int findLastIndex(short[] arr, Predicate<Short> condition) {
+	public int findLastIndex(short[] arr, ShortPredicate condition) {
 		for (int i = arr.length - 1; i >= 0; i--) {
 			if (condition.test(arr[i])) return i;
 		}
@@ -181,7 +181,7 @@ public class ShortArrayExtension {
 		return false;
 	}
 
-	public short[] filter(short[] arr, Predicate<Short> condition) {
+	public short[] filter(short[] arr, ShortPredicate condition) {
 		short[] tmp = new short[arr.length];
 		int i = 0;
 		for (short ele : arr) {
@@ -193,21 +193,21 @@ public class ShortArrayExtension {
 		return result;
 	}
 
-	public void forEach(short[] arr, Consumer<Short> consumer) {
+	public void forEach(short[] arr, ShortConsumer consumer) {
 		for (short ele : arr) {
 			consumer.accept(ele);
 		}
 	}
 
-	public short[] map(short[] arr, UnaryOperator<Short> function) {
+	public short[] map(short[] arr, ShortUnaryOperator function) {
 		short[] result = new short[arr.length];
 		for (int i = 0; i < arr.length; i++) {
-			result[i] = function.apply(arr[i]);
+			result[i] = function.applyAsShort(arr[i]);
 		}
 		return result;
 	}
 
-	public short[] filterMap(short[] arr, Function<Short, OptionalShort> function) {
+	public short[] filterMap(short[] arr, ShortFunction<OptionalShort> function) {
 		short[] tmp = new short[arr.length];
 		int i = 0;
 		for (short ele : arr) {
@@ -218,21 +218,21 @@ public class ShortArrayExtension {
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public short[] filterMap(short[] arr, Predicate<Short> condition, UnaryOperator<Short> function) {
+	public short[] filterMap(short[] arr, ShortPredicate condition, ShortUnaryOperator function) {
 		short[] tmp = new short[arr.length];
 		int i = 0;
 		for (short ele : arr) {
-			if (condition.test(ele)) tmp[i++] = function.apply(ele);
+			if (condition.test(ele)) tmp[i++] = function.applyAsShort(ele);
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public short[] mapFilter(short[] arr, UnaryOperator<Short> function, Predicate<Short> condition) {
+	public short[] mapFilter(short[] arr, ShortUnaryOperator function, ShortPredicate condition) {
 		short[] tmp = new short[arr.length];
 		int i = 0;
 		for (short ele : arr) {
-			short mapped = function.apply(ele);
+			short mapped = function.applyAsShort(ele);
 			if (condition.test(mapped)) tmp[i++] = mapped;
 		}
 		if (tmp.length == i) return tmp;
@@ -253,11 +253,11 @@ public class ShortArrayExtension {
 		return result;
 	}
 
-	public short[] flatMap(short[] arr, Function<Short,short[]> function) {
+	public short[] flatMap(short[] arr, ShortFunction<short[]> function) {
 		return flattened(mapToObj(arr, function, short[][]::new));
 	}
 
-	public <T> T[] mapToObj(short[] arr, Function<Short, T> function, IntFunction<T[]> supplier) {
+	public <T> T[] mapToObj(short[] arr, ShortFunction<T> function, IntFunction<T[]> supplier) {
 		T[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
 			result[i] = function.apply(arr[i]);
@@ -289,19 +289,19 @@ public class ShortArrayExtension {
 		return result;
 	}
 
-	public OptionalShort reduce(short[] arr, BinaryOperator<Short> accumulator) {
+	public OptionalShort reduce(short[] arr, ShortBinaryOperator accumulator) {
 		if (arr.length == 0) return OptionalShort.empty();
 		short result = arr[0];
 		for (int i = 1; i < arr.length; i++) {
-			result = accumulator.apply(result, arr[i]);
+			result = accumulator.applyAsShort(result, arr[i]);
 		}
 		return OptionalShort.of(result);
 	}
 
-	public short reduce(short[] arr, short identity, BinaryOperator<Short> accumulator) {
+	public short reduce(short[] arr, short identity, ShortBinaryOperator accumulator) {
 		short result = identity;
 		for (short ele : arr) {
-			result = accumulator.apply(result, ele);
+			result = accumulator.applyAsShort(result, ele);
 		}
 		return result;
 	}
