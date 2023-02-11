@@ -4,7 +4,7 @@ LombokExtensions is a library designed to provide useful classes for Lombok's @E
 
 ## Installation
 
-[![](https://jitpack.io/v/PhoenixmitX/LombokExtensions.svg)](https://jitpack.io/#PhoenixmitX/LombokExtensions)
+[![](https://jitpack.io/v/de.phoenixmitx/LombokExtensions.svg)](https://jitpack.io/#de.phoenixmitx/LombokExtensions)
 
 LombokExtensions can be installed using JitPack.
 
@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.PhoenixmitX:LombokExtensions:VERSION'
+    implementation 'de.phoenixmitx:LombokExtensions:VERSION'
 }
 ```
 
@@ -41,7 +41,7 @@ Next, you can add the LombokExtensions library as a dependency:
 
 ```xml
 <dependency>
-  <groupId>com.github.PhoenixmitX</groupId>
+  <groupId>de.phoenixmitx</groupId>
   <artifactId>LombokExtensions</artifactId>
   <version>VERSION</version>
 </dependency>
