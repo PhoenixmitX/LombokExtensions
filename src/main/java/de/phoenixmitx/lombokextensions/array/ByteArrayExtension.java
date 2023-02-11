@@ -1,23 +1,23 @@
 package de.phoenixmitx.lombokextensions.array;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 
+import de.phoenixmitx.lombokextensions.functions.bytes.ByteBinaryOperator;
+import de.phoenixmitx.lombokextensions.functions.bytes.ByteConsumer;
+import de.phoenixmitx.lombokextensions.functions.bytes.ByteFunction;
+import de.phoenixmitx.lombokextensions.functions.bytes.BytePredicate;
+import de.phoenixmitx.lombokextensions.functions.bytes.ByteUnaryOperator;
+import de.phoenixmitx.lombokextensions.functions.bytes.OptionalByte;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ByteArrayExtension {
-  
+	
 	public Byte[] boxed(byte[] arr) {
 		Byte[] result = new Byte[arr.length];
 		for (int i = 0; i < arr.length; i++) {
@@ -34,14 +34,14 @@ public class ByteArrayExtension {
 		return result;
 	}
 
-	public Optional<Byte> first(byte[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[0]);
+	public OptionalByte first(byte[] arr) {
+		if (arr.length == 0) return OptionalByte.empty();
+		return OptionalByte.of(arr[0]);
 	}
 
-	public Optional<Byte> last(byte[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[arr.length - 1]);
+	public OptionalByte last(byte[] arr) {
+		if (arr.length == 0) return OptionalByte.empty();
+		return OptionalByte.of(arr[arr.length - 1]);
 	}
 
 	public byte[] add(byte[] arr, byte c) {
@@ -101,7 +101,7 @@ public class ByteArrayExtension {
 		return arr;
 	}
 
-	public byte[] removeIf(byte[] arr, Predicate<Byte> predicate) {
+	public byte[] removeIf(byte[] arr, BytePredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -119,7 +119,7 @@ public class ByteArrayExtension {
 		return arr;
 	}
 
-	public byte[] retainIf(byte[] arr, Predicate<Byte> predicate) {
+	public byte[] retainIf(byte[] arr, BytePredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (!predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -128,21 +128,21 @@ public class ByteArrayExtension {
 		return arr;
 	}
 
-	public Optional<Byte> find(byte[] arr, Predicate<Byte> condition) {
+	public OptionalByte find(byte[] arr, BytePredicate condition) {
 		for (byte ele : arr) {
-			if (condition.test(ele)) return Optional.of(ele);
+			if (condition.test(ele)) return OptionalByte.of(ele);
 		}
-		return Optional.empty();
+		return OptionalByte.empty();
 	}
 
-	public int findIndex(byte[] arr, Predicate<Byte> condition) {
+	public int findIndex(byte[] arr, BytePredicate condition) {
 		for (int i = 0; i < arr.length; i++) {
 			if (condition.test(arr[i])) return i;
 		}
 		return -1;
 	}
 
-	public int findLastIndex(byte[] arr, Predicate<Byte> condition) {
+	public int findLastIndex(byte[] arr, BytePredicate condition) {
 		for (int i = arr.length - 1; i >= 0; i--) {
 			if (condition.test(arr[i])) return i;
 		}
@@ -181,7 +181,7 @@ public class ByteArrayExtension {
 		return false;
 	}
 
-	public byte[] filter(byte[] arr, Predicate<Byte> condition) {
+	public byte[] filter(byte[] arr, BytePredicate condition) {
 		byte[] tmp = new byte[arr.length];
 		int i = 0;
 		for (byte ele : arr) {
@@ -193,46 +193,46 @@ public class ByteArrayExtension {
 		return result;
 	}
 
-	public void forEach(byte[] arr, Consumer<Byte> consumer) {
+	public void forEach(byte[] arr, ByteConsumer consumer) {
 		for (byte ele : arr) {
 			consumer.accept(ele);
 		}
 	}
 
-	public byte[] map(byte[] arr, UnaryOperator<Byte> function) {
+	public byte[] map(byte[] arr, ByteUnaryOperator function) {
 		byte[] result = new byte[arr.length];
 		for (int i = 0; i < arr.length; i++) {
-			result[i] = function.apply(arr[i]);
+			result[i] = function.applyAsByte(arr[i]);
 		}
 		return result;
 	}
 
-	public byte[] filterMap(byte[] arr, Function<Byte, Optional<Byte>> function) {
+	public byte[] filterMap(byte[] arr, ByteFunction<OptionalByte> function) {
 		byte[] tmp = new byte[arr.length];
 		int i = 0;
 		for (byte ele : arr) {
-			Optional<Byte> optional = function.apply(ele);
-			if (optional.isPresent()) tmp[i++] = optional.get();
+			OptionalByte optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsByte();
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public byte[] filterMap(byte[] arr, Predicate<Byte> condition, UnaryOperator<Byte> function) {
+	public byte[] filterMap(byte[] arr, BytePredicate condition, ByteUnaryOperator function) {
 		byte[] tmp = new byte[arr.length];
 		int i = 0;
 		for (byte ele : arr) {
-			if (condition.test(ele)) tmp[i++] = function.apply(ele);
+			if (condition.test(ele)) tmp[i++] = function.applyAsByte(ele);
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public byte[] mapFilter(byte[] arr, UnaryOperator<Byte> function, Predicate<Byte> condition) {
+	public byte[] mapFilter(byte[] arr, ByteUnaryOperator function, BytePredicate condition) {
 		byte[] tmp = new byte[arr.length];
 		int i = 0;
 		for (byte ele : arr) {
-			byte mapped = function.apply(ele);
+			byte mapped = function.applyAsByte(ele);
 			if (condition.test(mapped)) tmp[i++] = mapped;
 		}
 		if (tmp.length == i) return tmp;
@@ -253,11 +253,11 @@ public class ByteArrayExtension {
 		return result;
 	}
 
-	public byte[] flatMap(byte[] arr, Function<Byte,byte[]> function) {
+	public byte[] flatMap(byte[] arr, ByteFunction<byte[]> function) {
 		return flattened(mapToObj(arr, function, byte[][]::new));
 	}
 
-	public <T> T[] mapToObj(byte[] arr, Function<Byte, T> function, IntFunction<T[]> supplier) {
+	public <T> T[] mapToObj(byte[] arr, ByteFunction<T> function, IntFunction<T[]> supplier) {
 		T[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
 			result[i] = function.apply(arr[i]);
@@ -289,19 +289,19 @@ public class ByteArrayExtension {
 		return result;
 	}
 
-	public Optional<Byte> reduce(byte[] arr, BinaryOperator<Byte> accumulator) {
-		if (arr.length == 0) return Optional.empty();
+	public OptionalByte reduce(byte[] arr, ByteBinaryOperator accumulator) {
+		if (arr.length == 0) return OptionalByte.empty();
 		byte result = arr[0];
 		for (int i = 1; i < arr.length; i++) {
-			result = accumulator.apply(result, arr[i]);
+			result = accumulator.applyAsByte(result, arr[i]);
 		}
-		return Optional.of(result);
+		return OptionalByte.of(result);
 	}
 
-	public byte reduce(byte[] arr, byte identity, BinaryOperator<Byte> accumulator) {
+	public byte reduce(byte[] arr, byte identity, ByteBinaryOperator accumulator) {
 		byte result = identity;
 		for (byte ele : arr) {
-			result = accumulator.apply(result, ele);
+			result = accumulator.applyAsByte(result, ele);
 		}
 		return result;
 	}

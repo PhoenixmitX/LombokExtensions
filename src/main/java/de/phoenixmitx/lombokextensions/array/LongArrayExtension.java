@@ -18,7 +18,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class LongArrayExtension {
 
-  public LongStream stream(long[] arr) {
+	public LongStream stream(long[] arr) {
 		return LongStream.of(arr);
 	}
 

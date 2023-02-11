@@ -1,23 +1,23 @@
 package de.phoenixmitx.lombokextensions.array;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 
+import de.phoenixmitx.lombokextensions.functions.chars.CharBinaryOperator;
+import de.phoenixmitx.lombokextensions.functions.chars.CharConsumer;
+import de.phoenixmitx.lombokextensions.functions.chars.CharFunction;
+import de.phoenixmitx.lombokextensions.functions.chars.CharPredicate;
+import de.phoenixmitx.lombokextensions.functions.chars.CharUnaryOperator;
+import de.phoenixmitx.lombokextensions.functions.chars.OptionalChar;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class CharArrayExtension {
-  
+	
 	public Character[] boxed(char[] arr) {
 		Character[] result = new Character[arr.length];
 		for (int i = 0; i < arr.length; i++) {
@@ -38,14 +38,14 @@ public class CharArrayExtension {
 		return new String(arr);
 	}
 
-	public Optional<Character> first(char[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[0]);
+	public OptionalChar first(char[] arr) {
+		if (arr.length == 0) return OptionalChar.empty();
+		return OptionalChar.of(arr[0]);
 	}
 
-	public Optional<Character> last(char[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[arr.length - 1]);
+	public OptionalChar last(char[] arr) {
+		if (arr.length == 0) return OptionalChar.empty();
+		return OptionalChar.of(arr[arr.length - 1]);
 	}
 
 	public char[] add(char[] arr, char c) {
@@ -105,7 +105,7 @@ public class CharArrayExtension {
 		return arr;
 	}
 
-	public char[] removeIf(char[] arr, Predicate<Character> predicate) {
+	public char[] removeIf(char[] arr, CharPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -123,7 +123,7 @@ public class CharArrayExtension {
 		return arr;
 	}
 
-	public char[] retainIf(char[] arr, Predicate<Character> predicate) {
+	public char[] retainIf(char[] arr, CharPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (!predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -132,21 +132,21 @@ public class CharArrayExtension {
 		return arr;
 	}
 
-	public Optional<Character> find(char[] arr, Predicate<Character> condition) {
+	public OptionalChar find(char[] arr, CharPredicate condition) {
 		for (char ele : arr) {
-			if (condition.test(ele)) return Optional.of(ele);
+			if (condition.test(ele)) return OptionalChar.of(ele);
 		}
-		return Optional.empty();
+		return OptionalChar.empty();
 	}
 
-	public int findIndex(char[] arr, Predicate<Character> condition) {
+	public int findIndex(char[] arr, CharPredicate condition) {
 		for (int i = 0; i < arr.length; i++) {
 			if (condition.test(arr[i])) return i;
 		}
 		return -1;
 	}
 
-	public int findLastIndex(char[] arr, Predicate<Character> condition) {
+	public int findLastIndex(char[] arr, CharPredicate condition) {
 		for (int i = arr.length - 1; i >= 0; i--) {
 			if (condition.test(arr[i])) return i;
 		}
@@ -185,58 +185,56 @@ public class CharArrayExtension {
 		return false;
 	}
 
-	public char[] filter(char[] arr, Predicate<Character> condition) {
+	public char[] filter(char[] arr, CharPredicate condition) {
 		char[] tmp = new char[arr.length];
 		int i = 0;
 		for (char ele : arr) {
 			if (condition.test(ele)) tmp[i++] = ele;
 		}
 		if (tmp.length == i) return tmp;
-		char[] result = new char[i];
-		System.arraycopy(tmp, 0, result, 0, i);
-		return result;
+		return Arrays.copyOf(tmp, i);
 	}
 
-	public void forEach(char[] arr, Consumer<Character> consumer) {
+	public void forEach(char[] arr, CharConsumer consumer) {
 		for (char ele : arr) {
 			consumer.accept(ele);
 		}
 	}
 
-	public char[] map(char[] arr, UnaryOperator<Character> function) {
+	public char[] map(char[] arr, CharUnaryOperator function) {
 		char[] result = new char[arr.length];
 		for (int i = 0; i < arr.length; i++) {
-			result[i] = function.apply(arr[i]);
+			result[i] = function.applyAsChar(arr[i]);
 		}
 		return result;
 	}
 
-	public char[] filterMap(char[] arr, Function<Character, Optional<Character>> function) {
+	public char[] filterMap(char[] arr, CharFunction<OptionalChar> function) {
 		char[] tmp = new char[arr.length];
 		int i = 0;
 		for (char ele : arr) {
-			Optional<Character> optional = function.apply(ele);
-			if (optional.isPresent()) tmp[i++] = optional.get();
+			OptionalChar optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsChar();
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public char[] filterMap(char[] arr, Predicate<Character> condition, UnaryOperator<Character> function) {
+	public char[] filterMap(char[] arr, CharPredicate condition, CharUnaryOperator function) {
 		char[] tmp = new char[arr.length];
 		int i = 0;
 		for (char ele : arr) {
-			if (condition.test(ele)) tmp[i++] = function.apply(ele);
+			if (condition.test(ele)) tmp[i++] = function.applyAsChar(ele);
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public char[] mapFilter(char[] arr, UnaryOperator<Character> function, Predicate<Character> condition) {
+	public char[] mapFilter(char[] arr, CharUnaryOperator function, CharPredicate condition) {
 		char[] tmp = new char[arr.length];
 		int i = 0;
 		for (char ele : arr) {
-			char mapped = function.apply(ele);
+			char mapped = function.applyAsChar(ele);
 			if (condition.test(mapped)) tmp[i++] = mapped;
 		}
 		if (tmp.length == i) return tmp;
@@ -257,11 +255,11 @@ public class CharArrayExtension {
 		return result;
 	}
 
-	public char[] flatMap(char[] arr, Function<Character,char[]> function) {
+	public char[] flatMap(char[] arr, CharFunction<char[]> function) {
 		return flattened(mapToObj(arr, function, char[][]::new));
 	}
 
-	public <T> T[] mapToObj(char[] arr, Function<Character, T> function, IntFunction<T[]> supplier) {
+	public <T> T[] mapToObj(char[] arr, CharFunction<T> function, IntFunction<T[]> supplier) {
 		T[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
 			result[i] = function.apply(arr[i]);
@@ -293,19 +291,19 @@ public class CharArrayExtension {
 		return result;
 	}
 
-	public Optional<Character> reduce(char[] arr, BinaryOperator<Character> accumulator) {
-		if (arr.length == 0) return Optional.empty();
+	public OptionalChar reduce(char[] arr, CharBinaryOperator accumulator) {
+		if (arr.length == 0) return OptionalChar.empty();
 		char result = arr[0];
 		for (int i = 1; i < arr.length; i++) {
-			result = accumulator.apply(result, arr[i]);
+			result = accumulator.applyAsChar(result, arr[i]);
 		}
-		return Optional.of(result);
+		return OptionalChar.of(result);
 	}
 
-	public char reduce(char[] arr, char identity, BinaryOperator<Character> accumulator) {
+	public char reduce(char[] arr, char identity, CharBinaryOperator accumulator) {
 		char result = identity;
 		for (char ele : arr) {
-			result = accumulator.apply(result, ele);
+			result = accumulator.applyAsChar(result, ele);
 		}
 		return result;
 	}

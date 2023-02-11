@@ -1,23 +1,23 @@
 package de.phoenixmitx.lombokextensions.array;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 
+import de.phoenixmitx.lombokextensions.functions.booleans.BooleanBinaryOperator;
+import de.phoenixmitx.lombokextensions.functions.booleans.BooleanConsumer;
+import de.phoenixmitx.lombokextensions.functions.booleans.BooleanFunction;
+import de.phoenixmitx.lombokextensions.functions.booleans.BooleanPredicate;
+import de.phoenixmitx.lombokextensions.functions.booleans.BooleanUnaryOperator;
+import de.phoenixmitx.lombokextensions.functions.booleans.OptionalBoolean;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BooleanArrayExtension {
-  
+	
 	public Boolean[] boxed(boolean[] arr) {
 		Boolean[] result = new Boolean[arr.length];
 		for (int i = 0; i < arr.length; i++) {
@@ -34,14 +34,14 @@ public class BooleanArrayExtension {
 		return result;
 	}
 
-	public Optional<Boolean> first(boolean[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[0]);
+	public OptionalBoolean first(boolean[] arr) {
+		if (arr.length == 0) return OptionalBoolean.empty();
+		return OptionalBoolean.of(arr[0]);
 	}
 
-	public Optional<Boolean> last(boolean[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[arr.length - 1]);
+	public OptionalBoolean last(boolean[] arr) {
+		if (arr.length == 0) return OptionalBoolean.empty();
+		return OptionalBoolean.of(arr[arr.length - 1]);
 	}
 
 	public boolean[] add(boolean[] arr, boolean c) {
@@ -101,7 +101,7 @@ public class BooleanArrayExtension {
 		return arr;
 	}
 
-	public boolean[] removeIf(boolean[] arr, Predicate<Boolean> predicate) {
+	public boolean[] removeIf(boolean[] arr, BooleanPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -119,7 +119,7 @@ public class BooleanArrayExtension {
 		return arr;
 	}
 
-	public boolean[] retainIf(boolean[] arr, Predicate<Boolean> predicate) {
+	public boolean[] retainIf(boolean[] arr, BooleanPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (!predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -128,21 +128,21 @@ public class BooleanArrayExtension {
 		return arr;
 	}
 
-	public Optional<Boolean> find(boolean[] arr, Predicate<Boolean> condition) {
+	public OptionalBoolean find(boolean[] arr, BooleanPredicate condition) {
 		for (boolean ele : arr) {
-			if (condition.test(ele)) return Optional.of(ele);
+			if (condition.test(ele)) return OptionalBoolean.of(ele);
 		}
-		return Optional.empty();
+		return OptionalBoolean.empty();
 	}
 
-	public int findIndex(boolean[] arr, Predicate<Boolean> condition) {
+	public int findIndex(boolean[] arr, BooleanPredicate condition) {
 		for (int i = 0; i < arr.length; i++) {
 			if (condition.test(arr[i])) return i;
 		}
 		return -1;
 	}
 
-	public int findLastIndex(boolean[] arr, Predicate<Boolean> condition) {
+	public int findLastIndex(boolean[] arr, BooleanPredicate condition) {
 		for (int i = arr.length - 1; i >= 0; i--) {
 			if (condition.test(arr[i])) return i;
 		}
@@ -181,7 +181,7 @@ public class BooleanArrayExtension {
 		return false;
 	}
 
-	public boolean[] filter(boolean[] arr, Predicate<Boolean> condition) {
+	public boolean[] filter(boolean[] arr, BooleanPredicate condition) {
 		boolean[] tmp = new boolean[arr.length];
 		int i = 0;
 		for (boolean ele : arr) {
@@ -193,46 +193,46 @@ public class BooleanArrayExtension {
 		return result;
 	}
 
-	public void forEach(boolean[] arr, Consumer<Boolean> consumer) {
+	public void forEach(boolean[] arr, BooleanConsumer consumer) {
 		for (boolean ele : arr) {
 			consumer.accept(ele);
 		}
 	}
 
-	public boolean[] map(boolean[] arr, UnaryOperator<Boolean> function) {
+	public boolean[] map(boolean[] arr, BooleanUnaryOperator function) {
 		boolean[] result = new boolean[arr.length];
 		for (int i = 0; i < arr.length; i++) {
-			result[i] = function.apply(arr[i]);
+			result[i] = function.applyAsBoolean(arr[i]);
 		}
 		return result;
 	}
 
-	public boolean[] filterMap(boolean[] arr, Function<Boolean, Optional<Boolean>> function) {
+	public boolean[] filterMap(boolean[] arr, BooleanFunction<OptionalBoolean> function) {
 		boolean[] tmp = new boolean[arr.length];
 		int i = 0;
 		for (boolean ele : arr) {
-			Optional<Boolean> optional = function.apply(ele);
-			if (optional.isPresent()) tmp[i++] = optional.get();
+			OptionalBoolean optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsBoolean();
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public boolean[] filterMap(boolean[] arr, Predicate<Boolean> condition, UnaryOperator<Boolean> function) {
+	public boolean[] filterMap(boolean[] arr, BooleanPredicate condition, BooleanUnaryOperator function) {
 		boolean[] tmp = new boolean[arr.length];
 		int i = 0;
 		for (boolean ele : arr) {
-			if (condition.test(ele)) tmp[i++] = function.apply(ele);
+			if (condition.test(ele)) tmp[i++] = function.applyAsBoolean(ele);
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public boolean[] mapFilter(boolean[] arr, UnaryOperator<Boolean> function, Predicate<Boolean> condition) {
+	public boolean[] mapFilter(boolean[] arr, BooleanUnaryOperator function, BooleanPredicate condition) {
 		boolean[] tmp = new boolean[arr.length];
 		int i = 0;
 		for (boolean ele : arr) {
-			boolean mapped = function.apply(ele);
+			boolean mapped = function.applyAsBoolean(ele);
 			if (condition.test(mapped)) tmp[i++] = mapped;
 		}
 		if (tmp.length == i) return tmp;
@@ -253,11 +253,11 @@ public class BooleanArrayExtension {
 		return result;
 	}
 
-	public boolean[] flatMap(boolean[] arr, Function<Boolean,boolean[]> function) {
+	public boolean[] flatMap(boolean[] arr, BooleanFunction<boolean[]> function) {
 		return flattened(mapToObj(arr, function, boolean[][]::new));
 	}
 
-	public <T> T[] mapToObj(boolean[] arr, Function<Boolean, T> function, IntFunction<T[]> supplier) {
+	public <T> T[] mapToObj(boolean[] arr, BooleanFunction<T> function, IntFunction<T[]> supplier) {
 		T[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
 			result[i] = function.apply(arr[i]);
@@ -289,19 +289,19 @@ public class BooleanArrayExtension {
 		return result;
 	}
 
-	public Optional<Boolean> reduce(boolean[] arr, BinaryOperator<Boolean> accumulator) {
-		if (arr.length == 0) return Optional.empty();
+	public OptionalBoolean reduce(boolean[] arr, BooleanBinaryOperator accumulator) {
+		if (arr.length == 0) return OptionalBoolean.empty();
 		boolean result = arr[0];
 		for (int i = 1; i < arr.length; i++) {
-			result = accumulator.apply(result, arr[i]);
+			result = accumulator.applyAsBoolean(result, arr[i]);
 		}
-		return Optional.of(result);
+		return OptionalBoolean.of(result);
 	}
 
-	public boolean reduce(boolean[] arr, boolean identity, BinaryOperator<Boolean> accumulator) {
+	public boolean reduce(boolean[] arr, boolean identity, BooleanBinaryOperator accumulator) {
 		boolean result = identity;
 		for (boolean ele : arr) {
-			result = accumulator.apply(result, ele);
+			result = accumulator.applyAsBoolean(result, ele);
 		}
 		return result;
 	}

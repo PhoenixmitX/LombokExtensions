@@ -1,23 +1,23 @@
 package de.phoenixmitx.lombokextensions.array;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
 
+import de.phoenixmitx.lombokextensions.functions.floats.FloatBinaryOperator;
+import de.phoenixmitx.lombokextensions.functions.floats.FloatConsumer;
+import de.phoenixmitx.lombokextensions.functions.floats.FloatFunction;
+import de.phoenixmitx.lombokextensions.functions.floats.FloatPredicate;
+import de.phoenixmitx.lombokextensions.functions.floats.FloatUnaryOperator;
+import de.phoenixmitx.lombokextensions.functions.floats.OptionalFloat;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class FloatArrayExtension {
-  
+	
 	public Float[] boxed(float[] arr) {
 		Float[] result = new Float[arr.length];
 		for (int i = 0; i < arr.length; i++) {
@@ -34,14 +34,14 @@ public class FloatArrayExtension {
 		return result;
 	}
 
-	public Optional<Float> first(float[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[0]);
+	public OptionalFloat first(float[] arr) {
+		if (arr.length == 0) return OptionalFloat.empty();
+		return OptionalFloat.of(arr[0]);
 	}
 
-	public Optional<Float> last(float[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[arr.length - 1]);
+	public OptionalFloat last(float[] arr) {
+		if (arr.length == 0) return OptionalFloat.empty();
+		return OptionalFloat.of(arr[arr.length - 1]);
 	}
 
 	public float[] add(float[] arr, float c) {
@@ -101,7 +101,7 @@ public class FloatArrayExtension {
 		return arr;
 	}
 
-	public float[] removeIf(float[] arr, Predicate<Float> predicate) {
+	public float[] removeIf(float[] arr, FloatPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -119,7 +119,7 @@ public class FloatArrayExtension {
 		return arr;
 	}
 
-	public float[] retainIf(float[] arr, Predicate<Float> predicate) {
+	public float[] retainIf(float[] arr, FloatPredicate predicate) {
 		for (int i = 0; i < arr.length; i++) {
 			if (!predicate.test(arr[i])) {
 				arr = removeIndex(arr, i--);
@@ -128,21 +128,21 @@ public class FloatArrayExtension {
 		return arr;
 	}
 
-	public Optional<Float> find(float[] arr, Predicate<Float> condition) {
+	public OptionalFloat find(float[] arr, FloatPredicate condition) {
 		for (float ele : arr) {
-			if (condition.test(ele)) return Optional.of(ele);
+			if (condition.test(ele)) return OptionalFloat.of(ele);
 		}
-		return Optional.empty();
+		return OptionalFloat.empty();
 	}
 
-	public int findIndex(float[] arr, Predicate<Float> condition) {
+	public int findIndex(float[] arr, FloatPredicate condition) {
 		for (int i = 0; i < arr.length; i++) {
 			if (condition.test(arr[i])) return i;
 		}
 		return -1;
 	}
 
-	public int findLastIndex(float[] arr, Predicate<Float> condition) {
+	public int findLastIndex(float[] arr, FloatPredicate condition) {
 		for (int i = arr.length - 1; i >= 0; i--) {
 			if (condition.test(arr[i])) return i;
 		}
@@ -181,7 +181,7 @@ public class FloatArrayExtension {
 		return false;
 	}
 
-	public float[] filter(float[] arr, Predicate<Float> condition) {
+	public float[] filter(float[] arr, FloatPredicate condition) {
 		float[] tmp = new float[arr.length];
 		int i = 0;
 		for (float ele : arr) {
@@ -193,46 +193,46 @@ public class FloatArrayExtension {
 		return result;
 	}
 
-	public void forEach(float[] arr, Consumer<Float> consumer) {
+	public void forEach(float[] arr, FloatConsumer consumer) {
 		for (float ele : arr) {
 			consumer.accept(ele);
 		}
 	}
 
-	public float[] map(float[] arr, UnaryOperator<Float> function) {
+	public float[] map(float[] arr, FloatUnaryOperator function) {
 		float[] result = new float[arr.length];
 		for (int i = 0; i < arr.length; i++) {
-			result[i] = function.apply(arr[i]);
+			result[i] = function.applyAsFloat(arr[i]);
 		}
 		return result;
 	}
 
-	public float[] filterMap(float[] arr, Function<Float, Optional<Float>> function) {
+	public float[] filterMap(float[] arr, FloatFunction<OptionalFloat> function) {
 		float[] tmp = new float[arr.length];
 		int i = 0;
 		for (float ele : arr) {
-			Optional<Float> optional = function.apply(ele);
-			if (optional.isPresent()) tmp[i++] = optional.get();
+			OptionalFloat optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsFloat();
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public float[] filterMap(float[] arr, Predicate<Float> condition, UnaryOperator<Float> function) {
+	public float[] filterMap(float[] arr, FloatPredicate condition, FloatUnaryOperator function) {
 		float[] tmp = new float[arr.length];
 		int i = 0;
 		for (float ele : arr) {
-			if (condition.test(ele)) tmp[i++] = function.apply(ele);
+			if (condition.test(ele)) tmp[i++] = function.applyAsFloat(ele);
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
 	}
 
-	public float[] mapFilter(float[] arr, UnaryOperator<Float> function, Predicate<Float> condition) {
+	public float[] mapFilter(float[] arr, FloatUnaryOperator function, FloatPredicate condition) {
 		float[] tmp = new float[arr.length];
 		int i = 0;
 		for (float ele : arr) {
-			float mapped = function.apply(ele);
+			float mapped = function.applyAsFloat(ele);
 			if (condition.test(mapped)) tmp[i++] = mapped;
 		}
 		if (tmp.length == i) return tmp;
@@ -253,11 +253,11 @@ public class FloatArrayExtension {
 		return result;
 	}
 
-	public float[] flatMap(float[] arr, Function<Float,float[]> function) {
+	public float[] flatMap(float[] arr, FloatFunction<float[]> function) {
 		return flattened(mapToObj(arr, function, float[][]::new));
 	}
 
-	public <T> T[] mapToObj(float[] arr, Function<Float, T> function, IntFunction<T[]> supplier) {
+	public <T> T[] mapToObj(float[] arr, FloatFunction<T> function, IntFunction<T[]> supplier) {
 		T[] result = supplier.apply(arr.length);
 		for (int i = 0; i < arr.length; i++) {
 			result[i] = function.apply(arr[i]);
@@ -289,19 +289,19 @@ public class FloatArrayExtension {
 		return result;
 	}
 
-	public Optional<Float> reduce(float[] arr, BinaryOperator<Float> accumulator) {
-		if (arr.length == 0) return Optional.empty();
+	public OptionalFloat reduce(float[] arr, FloatBinaryOperator accumulator) {
+		if (arr.length == 0) return OptionalFloat.empty();
 		float result = arr[0];
 		for (int i = 1; i < arr.length; i++) {
-			result = accumulator.apply(result, arr[i]);
+			result = accumulator.applyAsFloat(result, arr[i]);
 		}
-		return Optional.of(result);
+		return OptionalFloat.of(result);
 	}
 
-	public float reduce(float[] arr, float identity, BinaryOperator<Float> accumulator) {
+	public float reduce(float[] arr, float identity, FloatBinaryOperator accumulator) {
 		float result = identity;
 		for (float ele : arr) {
-			result = accumulator.apply(result, ele);
+			result = accumulator.applyAsFloat(result, ele);
 		}
 		return result;
 	}
@@ -310,6 +310,14 @@ public class FloatArrayExtension {
 		R result = identity;
 		for (float ele : arr) {
 			result = accumulator.apply(result, ele);
+		}
+		return result;
+	}
+
+	public double sum(float[] arr) {
+		double result = 0;
+		for (double ele : arr) {
+			result += ele;
 		}
 		return result;
 	}

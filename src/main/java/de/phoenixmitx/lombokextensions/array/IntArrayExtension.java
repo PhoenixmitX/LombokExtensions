@@ -16,8 +16,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class IntArrayExtension {
-  
-  public IntStream stream(int[] arr) {
+	
+	public IntStream stream(int[] arr) {
 		return IntStream.of(arr);
 	}
 

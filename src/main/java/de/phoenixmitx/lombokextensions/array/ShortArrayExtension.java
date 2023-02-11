@@ -1,7 +1,6 @@
 package de.phoenixmitx.lombokextensions.array;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -13,11 +12,12 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 
+import de.phoenixmitx.lombokextensions.functions.shorts.OptionalShort;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ShortArrayExtension {
-  
+	
 	public Short[] boxed(short[] arr) {
 		Short[] result = new Short[arr.length];
 		for (int i = 0; i < arr.length; i++) {
@@ -34,14 +34,14 @@ public class ShortArrayExtension {
 		return result;
 	}
 
-	public Optional<Short> first(short[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[0]);
+	public OptionalShort first(short[] arr) {
+		if (arr.length == 0) return OptionalShort.empty();
+		return OptionalShort.of(arr[0]);
 	}
 
-	public Optional<Short> last(short[] arr) {
-		if (arr.length == 0) return Optional.empty();
-		return Optional.of(arr[arr.length - 1]);
+	public OptionalShort last(short[] arr) {
+		if (arr.length == 0) return OptionalShort.empty();
+		return OptionalShort.of(arr[arr.length - 1]);
 	}
 
 	public short[] add(short[] arr, short c) {
@@ -128,11 +128,11 @@ public class ShortArrayExtension {
 		return arr;
 	}
 
-	public Optional<Short> find(short[] arr, Predicate<Short> condition) {
+	public OptionalShort find(short[] arr, Predicate<Short> condition) {
 		for (short ele : arr) {
-			if (condition.test(ele)) return Optional.of(ele);
+			if (condition.test(ele)) return OptionalShort.of(ele);
 		}
-		return Optional.empty();
+		return OptionalShort.empty();
 	}
 
 	public int findIndex(short[] arr, Predicate<Short> condition) {
@@ -207,12 +207,12 @@ public class ShortArrayExtension {
 		return result;
 	}
 
-	public short[] filterMap(short[] arr, Function<Short, Optional<Short>> function) {
+	public short[] filterMap(short[] arr, Function<Short, OptionalShort> function) {
 		short[] tmp = new short[arr.length];
 		int i = 0;
 		for (short ele : arr) {
-			Optional<Short> optional = function.apply(ele);
-			if (optional.isPresent()) tmp[i++] = optional.get();
+			OptionalShort optional = function.apply(ele);
+			if (optional.isPresent()) tmp[i++] = optional.getAsShort();
 		}
 		if (tmp.length == i) return tmp;
 		return Arrays.copyOf(tmp, i);
@@ -289,13 +289,13 @@ public class ShortArrayExtension {
 		return result;
 	}
 
-	public Optional<Short> reduce(short[] arr, BinaryOperator<Short> accumulator) {
-		if (arr.length == 0) return Optional.empty();
+	public OptionalShort reduce(short[] arr, BinaryOperator<Short> accumulator) {
+		if (arr.length == 0) return OptionalShort.empty();
 		short result = arr[0];
 		for (int i = 1; i < arr.length; i++) {
 			result = accumulator.apply(result, arr[i]);
 		}
-		return Optional.of(result);
+		return OptionalShort.of(result);
 	}
 
 	public short reduce(short[] arr, short identity, BinaryOperator<Short> accumulator) {
@@ -310,6 +310,14 @@ public class ShortArrayExtension {
 		R result = identity;
 		for (short ele : arr) {
 			result = accumulator.apply(result, ele);
+		}
+		return result;
+	}
+
+	public int sum(short[] arr) {
+		int result = 0;
+		for (double ele : arr) {
+			result += ele;
 		}
 		return result;
 	}

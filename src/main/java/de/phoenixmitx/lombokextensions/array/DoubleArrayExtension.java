@@ -17,8 +17,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class DoubleArrayExtension {
-  
-  public DoubleStream stream(double[] arr) {
+	
+	public DoubleStream stream(double[] arr) {
 		return DoubleStream.of(arr);
 	}
 

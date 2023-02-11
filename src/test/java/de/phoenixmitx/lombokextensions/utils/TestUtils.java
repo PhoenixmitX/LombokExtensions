@@ -1,4 +1,4 @@
-package de.phoenixmitx.lombokextensions;
+package de.phoenixmitx.lombokextensions.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

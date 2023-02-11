@@ -66,7 +66,7 @@ public class ArrayExtension {
 	 * double[] mapToDouble(ToDoubleFunction<T> function)
 	 * 
 	 * Optional<T> reduce(BinaryOperator<T> accumulator)
-	 * T reduce(T identity, BinaryOperator<T> accumulator) // TODO is this redundant?
+	 * T reduce(T identity, BinaryOperator<T> accumulator)
 	 * R reduce(R identity, BiFunction<R,T,R> accumulator)
 	 * 
 	 * T[] reverse()
@@ -75,6 +75,9 @@ public class ArrayExtension {
 	 * 
 	 * Optional<T> findFirst(Predicate<T> condition)
 	 * Optional<T> findLast(Predicate<T> condition)
+	 * R mapTo<R>(Function<T,R> function) for all primitive types
+	 * 
+	 * mappings between byte and int as unsigned representation
 	 * 
 	 * update list of implemented methods
 	 * write tests for all methods

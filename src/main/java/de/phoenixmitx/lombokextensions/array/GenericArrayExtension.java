@@ -3,6 +3,7 @@ package de.phoenixmitx.lombokextensions.array;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -341,9 +342,7 @@ public class GenericArrayExtension {
 	@SuppressWarnings("unchecked")
 	public <T> T[] distinct(T[] arr) {
 		Set<T> set = new HashSet<>();
-		for (T ele : arr) {
-			set.add(ele);
-		}
+		Collections.addAll(set, arr);
 		return set.toArray((T[]) Array.newInstance(arr.getClass().getComponentType(), set.size()));
 	}
 
