@@ -25,11 +25,11 @@ public class NullableExtension {
 		}
 	}
 
-	public <T> T ifNull(T t, Supplier<T> supplier) {
+	public <T> T mapIfNull(T t, Supplier<T> supplier) {
 		return t == null ? supplier.get() : t;
 	}
 
-	public <T,R> R ifNotNull(T t, Function<T,R> function) {
+	public <T,R> R mapIfNotNull(T t, Function<T,R> function) {
 		return t != null ? function.apply(t) : null;
 	}
 
