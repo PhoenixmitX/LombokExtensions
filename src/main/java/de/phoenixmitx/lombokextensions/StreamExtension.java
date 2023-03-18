@@ -6,18 +6,18 @@ import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class StreamExtention { // TODO write methods for all types of streams
+public class StreamExtension { // TODO write methods for all types of streams
 
 	// GENERIC STREAMS
 
 	@FunctionalInterface
 	public interface IntReducer<T> {
-		int reduce(T obj, int i);
+		int reduce(int i, T obj);
 	}
 
-	public <T> int reduceToInt(Stream<T> stream, int i, IntReducer<T> reducer) {
-		int[] result = { i };
-		stream.forEach(ele -> result[0] = reducer.reduce(ele, result[0]));
+	public <T> int reduceToInt(Stream<T> stream, int identity, IntReducer<T> reducer) {
+		int[] result = { identity };
+		stream.forEach(ele -> result[0] = reducer.reduce(result[0], ele));
 		return result[0];
 	}
 
