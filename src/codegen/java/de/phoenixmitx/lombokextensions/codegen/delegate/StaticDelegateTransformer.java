@@ -1,6 +1,6 @@
 package de.phoenixmitx.lombokextensions.codegen.delegate;
 
-import de.phoenixmitx.lombokextensions.codegen.transformer.CodegenAnnotationTransformer;
+import de.phoenixmitx.lombokextensions.codegen.transformer.annotation.CodegenAnnotationTransformer;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -19,7 +19,7 @@ public class StaticDelegateTransformer extends CodegenAnnotationTransformer {
   }
 
   @Override
-  public boolean transform(CtClass newClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute, byte[] classfileBuffer) throws CannotCompileException, NotFoundException {
+  public boolean transformType(CtClass newClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute, byte[] classfileBuffer) throws CannotCompileException, NotFoundException {
     // Get the classes to delegate to from the annotation
     MemberValue[] classValues = ((ArrayMemberValue) ctAnnotation.getMemberValue("value")).getValue();
 
@@ -35,8 +35,8 @@ public class StaticDelegateTransformer extends CodegenAnnotationTransformer {
 
           CtMethod newMethod = new CtMethod(oldMethod.getReturnType(), oldMethod.getName(), oldMethod.getParameterTypes(), newClass);
           newMethod.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
-          if (oldMethod.getGenericSignature() != null) newMethod.setGenericSignature(oldMethod.getGenericSignature());
           newMethod.setBody("return " + oldClassName + "." + oldMethod.getName() + "($$);");
+          if (oldMethod.getGenericSignature() != null) newMethod.setGenericSignature(oldMethod.getGenericSignature());
 
           newClass.addMethod(newMethod);
         }
