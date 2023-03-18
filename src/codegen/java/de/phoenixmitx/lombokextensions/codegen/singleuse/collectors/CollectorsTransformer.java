@@ -9,6 +9,7 @@ import de.phoenixmitx.lombokextensions.codegen.transformer.CodegenTransformer;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
+import javassist.Modifier;
 import javassist.NotFoundException;
 
 public class CollectorsTransformer extends CodegenTransformer {
@@ -26,14 +27,16 @@ public class CollectorsTransformer extends CodegenTransformer {
 
 		for (CtMethod collectorsMethod : collectorsClass.getMethods()) {
 			CtClass returnType = collectorsMethod.getReturnType();
-			if (!returnType.equals(collectorClass)) {
+			if (!returnType.equals(collectorClass) || collectorsMethod.getModifiers() != (Modifier.PUBLIC | Modifier.STATIC)) {
 				continue;
 			}
 
 			CtClass[] parameterTypes = collectorsMethod.getParameterTypes();
 			// TODO add generics
 			// TODO add return type
+			// TODO add parameter names
 			CtMethod ctMethod = new CtMethod(objectClass, collectorsMethod.getName(), merge(new CtClass[] {streamClass}, parameterTypes), ctClass);
+			ctMethod.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
 			ctMethod.setBody("return $1.collect(java.util.stream.Collectors." + collectorsMethod.getName() + "(" + IntStream.rangeClosed(2, parameterTypes.length+1).mapToObj(i -> "$"+i).collect(Collectors.joining(",")) + "));");
 			ctClass.addMethod(ctMethod);
 		}

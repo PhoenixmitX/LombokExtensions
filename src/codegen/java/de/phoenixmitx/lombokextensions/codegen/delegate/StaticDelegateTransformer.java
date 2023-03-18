@@ -33,10 +33,11 @@ public class StaticDelegateTransformer extends CodegenAnnotationTransformer {
         // Check if the method is static
         if (Modifier.isStatic(oldMethod.getModifiers()) && Modifier.isPublic(oldMethod.getModifiers())) {
 
+					// TODO add parameter names
           CtMethod newMethod = new CtMethod(oldMethod.getReturnType(), oldMethod.getName(), oldMethod.getParameterTypes(), newClass);
           newMethod.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
-          newMethod.setBody("return " + oldClassName + "." + oldMethod.getName() + "($$);");
           if (oldMethod.getGenericSignature() != null) newMethod.setGenericSignature(oldMethod.getGenericSignature());
+          newMethod.setBody("return " + oldClassName + "." + oldMethod.getName() + "($$);");
 
           newClass.addMethod(newMethod);
         }
