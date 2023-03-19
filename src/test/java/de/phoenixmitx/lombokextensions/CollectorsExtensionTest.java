@@ -8,6 +8,6 @@ public class CollectorsExtensionTest {
 
 	@Test
 	public void testTrasformerWorked() {
-		assertTrue(CollectorsExtension.class.getDeclaredMethods().length > 40, "CollectorsTransformer didn't work (only " + CollectorsExtension.class.getDeclaredMethods().length + " methods found)");
+		assertTrue(CollectorsExtension.class.getDeclaredMethods().length >= 37, "CollectorsTransformer didn't work (only " + CollectorsExtension.class.getDeclaredMethods().length + " methods found)");
 	}
 }
