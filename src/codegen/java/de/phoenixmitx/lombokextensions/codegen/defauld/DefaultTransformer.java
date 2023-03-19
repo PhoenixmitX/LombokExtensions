@@ -16,7 +16,7 @@ public class DefaultTransformer extends CodegenAnnotationTransformer {
 	}
 
 	@Override
-	protected boolean transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute, byte[] classfileBuffer) throws IOException, CannotCompileException, NotFoundException {
+	protected boolean transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException {
 		return false;
 	}
 }

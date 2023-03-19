@@ -27,17 +27,21 @@ public class JavaAgentTransformer implements ClassFileTransformer {
     try {
       CtClass ctClass = classPool.get(className.replace("/", "."));
 
-      boolean changed = false;
+      boolean modified = false;
 
       for (CodegenTransformer transformer : transformers) {
-        changed |= transformer.transform(ctClass, classfileBuffer);
+        modified |= transformer.transform(ctClass);
       }
       
-      if (changed) {
+      if (modified) {
+				System.out.println("Transformed class " + className);
         try (FileOutputStream fos = new FileOutputStream("build/classes/java/main/" + className + ".class"); DataOutputStream dos = new DataOutputStream(fos)) {
           ctClass.getClassFile().write(dos);
+					System.out.println("Wrote class " + className);
           return ctClass.toBytecode();
-        }
+        } finally {
+					ctClass.detach();
+				}
       }
       return classfileBuffer;
     } catch (Exception e) {

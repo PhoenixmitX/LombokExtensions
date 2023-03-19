@@ -9,5 +9,5 @@ import javassist.NotFoundException;
 
 public abstract class CodegenTransformer {
   protected final ClassPool classPool = ClassPool.getDefault();
-  public abstract boolean transform(CtClass ctClass, byte[] classfileBuffer) throws IOException, CannotCompileException, NotFoundException;
+  public abstract boolean transform(CtClass ctClass) throws IOException, CannotCompileException, NotFoundException;
 }

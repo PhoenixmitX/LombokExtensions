@@ -30,7 +30,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
   }
 
   @Override
-  public final boolean transform(CtClass ctClass, byte[] classfileBuffer) throws IOException, CannotCompileException, NotFoundException {
+  public final boolean transform(CtClass ctClass) throws IOException, CannotCompileException, NotFoundException {
 		boolean modified = false;
 		for (ElementType elementType : target) {
 			switch (elementType) {
@@ -38,7 +38,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 					AnnotationsAttribute annotationsAttribute = getAttribute(ctClass.getClassFile().getAttributes(), AnnotationsAttribute.class);
 					Annotation annotation = getAnnotation(annotationsAttribute);
 					if (annotation != null) {
-						modified |= transformType(ctClass, annotation, annotationsAttribute, classfileBuffer);
+						modified |= transformType(ctClass, annotation, annotationsAttribute);
 					}
 					break;
 				}
@@ -47,7 +47,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 						AnnotationsAttribute annotationsAttribute = getAttribute(ctMethod.getMethodInfo().getAttributes(), AnnotationsAttribute.class);
 						Annotation annotation = getAnnotation(annotationsAttribute);
 						if (annotation != null) {
-							modified |= transformMethod(ctClass, ctMethod, annotation, annotationsAttribute, classfileBuffer);
+							modified |= transformMethod(ctClass, ctMethod, annotation, annotationsAttribute);
 						}
 					}
 					break;
@@ -71,7 +71,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 							}
 						}
 						if (annotationFound) {
-							modified |= transformMethodWithParameters(ctClass, ctMethod, annotation, parameterAnnotationsAttribute, classfileBuffer);
+							modified |= transformMethodWithParameters(ctClass, ctMethod, annotation, parameterAnnotationsAttribute);
 						}
 					}
 					break;
@@ -99,7 +99,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 				.orElse(null);
 	}
 
-  protected boolean transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute, byte[] classfileBuffer) throws IOException, CannotCompileException, NotFoundException { return false; }
-	protected boolean transformMethod(CtClass ctClass, CtMethod method, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute, byte[] classfileBuffer) throws IOException, CannotCompileException, NotFoundException { return false; }
-	protected boolean transformMethodWithParameters(CtClass ctClass, CtMethod method, Annotation[] ctAnnotation, ParameterAnnotationsAttribute annotationsAttribute, byte[] classfileBuffer) throws IOException, CannotCompileException, NotFoundException { return false; }
+  protected boolean transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException { return false; }
+	protected boolean transformMethod(CtClass ctClass, CtMethod method, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException { return false; }
+	protected boolean transformMethodWithParameters(CtClass ctClass, CtMethod method, Annotation[] ctAnnotation, ParameterAnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException { return false; }
 }
