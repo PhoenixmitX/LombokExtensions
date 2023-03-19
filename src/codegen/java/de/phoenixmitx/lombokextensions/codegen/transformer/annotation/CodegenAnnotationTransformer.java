@@ -14,6 +14,7 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.AttributeInfo;
+import javassist.bytecode.BadBytecode;
 import javassist.bytecode.ParameterAnnotationsAttribute;
 import javassist.bytecode.annotation.Annotation;
 
@@ -30,7 +31,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
   }
 
   @Override
-  public final boolean transform(CtClass ctClass) throws IOException, CannotCompileException, NotFoundException {
+  public final boolean transform(CtClass ctClass) throws IOException, CannotCompileException, NotFoundException, BadBytecode {
 		boolean modified = false;
 		for (ElementType elementType : target) {
 			switch (elementType) {
@@ -99,7 +100,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 				.orElse(null);
 	}
 
-  protected boolean transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException { return false; }
-	protected boolean transformMethod(CtClass ctClass, CtMethod method, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException { return false; }
-	protected boolean transformMethodWithParameters(CtClass ctClass, CtMethod method, Annotation[] ctAnnotation, ParameterAnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException { return false; }
+  protected boolean transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { return false; }
+	protected boolean transformMethod(CtClass ctClass, CtMethod method, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { return false; }
+	protected boolean transformMethodWithParameters(CtClass ctClass, CtMethod method, Annotation[] ctAnnotation, ParameterAnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { return false; }
 }

@@ -9,7 +9,7 @@ targetCompatibility = 8
 
 group = "de.phoenixmitx"
 archivesBaseName = "LombokExtensions"
-version = "1.0.5"
+version = "1.0.8"
 description = "A library for lomboks ExtensionMethods"
 
 sourceSets {

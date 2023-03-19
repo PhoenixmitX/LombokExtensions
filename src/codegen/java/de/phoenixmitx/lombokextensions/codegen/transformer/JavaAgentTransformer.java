@@ -34,10 +34,9 @@ public class JavaAgentTransformer implements ClassFileTransformer {
       }
       
       if (modified) {
-				System.out.println("Transformed class " + className);
+				System.out.println("CodegenAgent: Transformed class " + className);
         try (FileOutputStream fos = new FileOutputStream("build/classes/java/main/" + className + ".class"); DataOutputStream dos = new DataOutputStream(fos)) {
           ctClass.getClassFile().write(dos);
-					System.out.println("Wrote class " + className);
           return ctClass.toBytecode();
         } finally {
 					ctClass.detach();
