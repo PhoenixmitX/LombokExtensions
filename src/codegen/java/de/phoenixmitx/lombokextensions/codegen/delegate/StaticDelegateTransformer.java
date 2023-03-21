@@ -19,7 +19,7 @@ public class StaticDelegateTransformer extends CodegenAnnotationTransformer {
   }
 
   @Override
-  public boolean transformType(CtClass newClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws CannotCompileException, NotFoundException {
+  public void transformType(CtClass newClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws CannotCompileException, NotFoundException {
     // Get the classes to delegate to from the annotation
     MemberValue[] classValues = ((ArrayMemberValue) ctAnnotation.getMemberValue("value")).getValue();
 
@@ -43,10 +43,5 @@ public class StaticDelegateTransformer extends CodegenAnnotationTransformer {
         }
       }
     }
-
-    // Remove the StaticDelegate annotation
-    annotationsAttribute.removeAnnotation("de.phoenixmitx.lombokextensions.codegen.delegate.StaticDelegate");
-
-    return true;
   }
 }

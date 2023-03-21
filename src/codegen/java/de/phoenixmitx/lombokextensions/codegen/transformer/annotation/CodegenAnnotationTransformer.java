@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.phoenixmitx.lombokextensions.codegen.transformer.CodegenTransformer;
+import de.phoenixmitx.lombokextensions.codegen.utils.ArrayUtils;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -39,7 +40,9 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 					AnnotationsAttribute annotationsAttribute = getAttribute(ctClass.getClassFile().getAttributes(), AnnotationsAttribute.class);
 					Annotation annotation = getAnnotation(annotationsAttribute);
 					if (annotation != null) {
-						modified |= transformType(ctClass, annotation, annotationsAttribute);
+						transformType(ctClass, annotation, annotationsAttribute);
+						annotationsAttribute.removeAnnotation(fullyQualifiedAnnotationName);
+						modified = true;
 					}
 					break;
 				}
@@ -48,7 +51,9 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 						AnnotationsAttribute annotationsAttribute = getAttribute(ctMethod.getMethodInfo().getAttributes(), AnnotationsAttribute.class);
 						Annotation annotation = getAnnotation(annotationsAttribute);
 						if (annotation != null) {
-							modified |= transformMethod(ctClass, ctMethod, annotation, annotationsAttribute);
+							transformMethod(ctClass, ctMethod, annotation, annotationsAttribute);
+							annotationsAttribute.removeAnnotation(fullyQualifiedAnnotationName);
+							modified = true;
 						}
 					}
 					break;
@@ -72,7 +77,14 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 							}
 						}
 						if (annotationFound) {
-							modified |= transformMethodWithParameters(ctClass, ctMethod, annotation, parameterAnnotationsAttribute);
+							transformMethodWithParameterAnnotations(ctClass, ctMethod, annotation, parameterAnnotationsAttribute);
+							for (int i = 0; i < annotations.length; i++) {
+								if (annotation[i] != null) {
+									annotations[i] = ArrayUtils.remove(annotations[i], annotation[i]);
+								}
+							}
+							parameterAnnotationsAttribute.setAnnotations(annotations);
+							modified = true;
 						}
 					}
 					break;
@@ -100,7 +112,7 @@ public abstract class CodegenAnnotationTransformer extends CodegenTransformer {
 				.orElse(null);
 	}
 
-  protected boolean transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { return false; }
-	protected boolean transformMethod(CtClass ctClass, CtMethod method, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { return false; }
-	protected boolean transformMethodWithParameters(CtClass ctClass, CtMethod method, Annotation[] ctAnnotation, ParameterAnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { return false; }
+  protected void transformType(CtClass ctClass, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { /* implemented by super class */ }
+	protected void transformMethod(CtClass ctClass, CtMethod method, Annotation ctAnnotation, AnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { /* implemented by super class */ }
+	protected void transformMethodWithParameterAnnotations(CtClass ctClass, CtMethod method, Annotation[] ctAnnotation, ParameterAnnotationsAttribute annotationsAttribute) throws IOException, CannotCompileException, NotFoundException, BadBytecode { /* implemented by super class */ }
 }

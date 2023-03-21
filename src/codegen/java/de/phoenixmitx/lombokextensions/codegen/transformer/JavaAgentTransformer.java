@@ -8,12 +8,18 @@ import java.security.ProtectionDomain;
 
 import javassist.ClassPool;
 import javassist.CtClass;
+import lombok.Getter;
+import lombok.extern.java.Log;
 
+@Log
 public class JavaAgentTransformer implements ClassFileTransformer {
 
   private final ClassPool classPool = ClassPool.getDefault();
 
   private final CodegenTransformer[] transformers;
+
+	@Getter
+	private IllegalClassFormatException lastException;
 
   public JavaAgentTransformer(CodegenTransformer... transformers) {
     this.transformers = transformers;
@@ -34,7 +40,7 @@ public class JavaAgentTransformer implements ClassFileTransformer {
       }
       
       if (modified) {
-				System.out.println("CodegenAgent: Transformed class " + className);
+				log.info("CodegenAgent: Transformed class " + className);
         try (FileOutputStream fos = new FileOutputStream("build/classes/java/main/" + className + ".class"); DataOutputStream dos = new DataOutputStream(fos)) {
           ctClass.getClassFile().write(dos);
           return ctClass.toBytecode();
@@ -44,10 +50,8 @@ public class JavaAgentTransformer implements ClassFileTransformer {
       }
       return classfileBuffer;
     } catch (Exception e) {
-      IllegalClassFormatException icfx = new IllegalClassFormatException("Error transforming class " + className);
+      IllegalClassFormatException icfx = lastException = new IllegalClassFormatException("Error transforming class " + className);
       icfx.initCause(e);
-      // Print the stacktrace to the console - the javaagent does not print the stacktrace
-      e.printStackTrace();
       throw icfx;
     }
   }

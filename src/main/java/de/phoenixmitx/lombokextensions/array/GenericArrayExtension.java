@@ -105,7 +105,7 @@ public class GenericArrayExtension {
 
 	public <T> T[] removeAll(T[] arr, T[] c) {
 		for (int i = 0; i < c.length; i++) {
-			arr = removeIndex(arr, i--);
+			arr = remove(arr, c[i]);
 		}
 		return arr;
 	}

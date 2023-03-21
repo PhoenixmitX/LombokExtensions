@@ -1,12 +1,11 @@
 package de.phoenixmitx.lombokextensions.codegen.singleuse.collectors;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import de.phoenixmitx.lombokextensions.codegen.transformer.CodegenTransformer;
 import de.phoenixmitx.lombokextensions.codegen.utils.ArrayUtils;
 import de.phoenixmitx.lombokextensions.codegen.utils.GenericUtils;
+import de.phoenixmitx.lombokextensions.codegen.utils.OrdinalParameter;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -19,7 +18,9 @@ import javassist.bytecode.SignatureAttribute.MethodSignature;
 import javassist.bytecode.SignatureAttribute.ObjectType;
 import javassist.bytecode.SignatureAttribute.Type;
 import javassist.bytecode.SignatureAttribute.TypeArgument;
+import lombok.experimental.ExtensionMethod;
 
+@ExtensionMethod({ OrdinalParameter.class })
 public class CollectorsTransformer extends CodegenTransformer {
 
 	@Override
@@ -62,7 +63,7 @@ public class CollectorsTransformer extends CodegenTransformer {
 		CtMethod ctMethod = new CtMethod(newReturnTypeClass, collectorsMethod.getName(), ArrayUtils.merge(new CtClass[] {streamClass}, collectorsMethodParameterTypes), extensionClass);
 		ctMethod.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
 		ctMethod.setGenericSignature(newSignature.encode());
-		ctMethod.setBody("return (" + newReturnTypeClass.getName() + ") $1.collect(java.util.stream.Collectors." + collectorsMethod.getName() + "(" + IntStream.rangeClosed(2, collectorsMethodParameterTypes.length+1).mapToObj(i -> "$"+i).collect(Collectors.joining(",")) + "));");
+		ctMethod.setBodyWithOrdinalParameters("return (" + newReturnTypeClass.getName() + ") $0.collect(java.util.stream.Collectors." + collectorsMethod.getName() + "($$1-" + collectorsMethodParameterTypes.length + "));");
 
 		return ctMethod;
 	}

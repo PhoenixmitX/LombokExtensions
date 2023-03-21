@@ -9,7 +9,7 @@ targetCompatibility = 8
 
 group = "de.phoenixmitx"
 archivesBaseName = "LombokExtensions"
-version = "1.0.8"
+version = "1.0.9"
 description = "A library for lomboks ExtensionMethods"
 
 sourceSets {
@@ -56,10 +56,14 @@ task recompileJava(type: JavaExec) {
 	classpath = sourceSets.main.output + sourceSets.codegen.output + sourceSets.codegen.compileClasspath
 	jvmArgs += "-javaagent:$codegenJar.archivePath".toString()
 	mainClass = "de.phoenixmitx.lombokextensions.codegen.CodegenAgent"
+	systemProperties = [
+		"java.util.logging.SimpleFormatter.format": "[%1\$tF %1\$tT] [%4\$-7s] %5\$s %n"
+	]
 }
 
 compileJava {
-  dependsOn compileCodegenJava
+	// TODO find a way to not need to clean the compileJava task for the codegen to work
+  dependsOn compileCodegenJava, cleanCompileJava
 	finalizedBy recompileJava
   classpath += sourceSets.codegen.output
 }
