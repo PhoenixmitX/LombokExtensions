@@ -1,12 +1,16 @@
 package de.phoenixmitx.lombokextensions.codegen;
 
+import java.io.IOException;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
+import java.nio.file.Path;
 
 import de.phoenixmitx.lombokextensions.codegen.defauld.DefaultValueTransformer;
 import de.phoenixmitx.lombokextensions.codegen.delegate.StaticDelegateTransformer;
 import de.phoenixmitx.lombokextensions.codegen.singleuse.collectors.CollectorsTransformer;
 import de.phoenixmitx.lombokextensions.codegen.transformer.JavaAgentTransformer;
+import de.phoenixmitx.lombokextensions.codegen.utils.ClassScanner;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.java.Log;
 
@@ -27,23 +31,20 @@ public class CodegenAgent {
     transformerInitialized = true;
   }
 
-  public static void main(String[] args) throws ClassNotFoundException, IllegalClassFormatException {
+  public static void main(String[] args) throws ClassNotFoundException, IllegalClassFormatException, IOException {
     if (!transformerInitialized) {
       throw new IllegalStateException("CodegenAgent: Transformer not initialized");
     }
     log.info("CodegenAgent: Transforming classes");
-		transforClass("de.phoenixmitx.lombokextensions.ArrayExtension");
-		transforClass("de.phoenixmitx.lombokextensions.CollectorsExtension");
-		transforClass("de.phoenixmitx.lombokextensions.MapExtension");
+		ClassScanner.scan(Path.of("build/classes/java/main/"), CodegenAgent::transformClass);
 		log.info("CodegenAgent: Done");
   }
 
-	private static void transforClass(String className) throws ClassNotFoundException, IllegalClassFormatException {
-		log.info("CodegenAgent: Transforming class " + className);
+	@SneakyThrows
+	private static void transformClass(String className) {
 		Class.forName(className);
 		if (transformer.getLastException() != null) {
 			throw transformer.getLastException();
 		}
-		log.info("CodegenAgent: Transformed class " + className);
 	}
 }
