@@ -1,47 +1,54 @@
 package de.phoenixmitx.lombokextensions;
 
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import de.phoenixmitx.lombokextensions.codegen.transformers.general.staticdelegate.StaticDelegate;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class StreamExtension { // TODO write methods for all types of streams
+@StaticDelegate({ CollectorsExtension.class })
+public class StreamExtension {
 
 	// GENERIC STREAMS
 
-	@FunctionalInterface
-	public interface IntReducer<T> {
-		int reduce(int i, T obj);
-	}
-
-	public <T> int reduceToInt(Stream<T> stream, int identity, IntReducer<T> reducer) {
-		int[] result = { identity };
-		stream.forEach(ele -> result[0] = reducer.reduce(result[0], ele));
-		return result[0];
-	}
-
-	public <T> int reduceToInt(Stream<T> stream, IntReducer<T> reducer) {
-		return reduceToInt(stream, 0, reducer);
+	public <T> Stream<T> filterOptional(Stream<Optional<T>> stream) {
+		return stream.filter(Optional::isPresent).map(Optional::get);
 	}
 
 	// INT STREAMS
 
+	public IntStream unboxedInt(Stream<Integer> stream) {
+		return stream.mapToInt(Integer::intValue);
+	}
+	
+	public IntStream filterOptionalInt(Stream<OptionalInt> stream) {
+		return stream.filter(OptionalInt::isPresent).mapToInt(OptionalInt::getAsInt);
+	}
+
 	// LONG STREAMS
+
+	public LongStream unboxedLong(Stream<Long> stream) {
+		return stream.mapToLong(Long::longValue);
+	}
+
+	public LongStream filterOptionalLong(Stream<OptionalLong> stream) {
+		return stream.filter(OptionalLong::isPresent).mapToLong(OptionalLong::getAsLong);
+	}
 
 	// DOUBLE STREAMS
 
-	// CLASS SPECIFIC STREAMS
-
-	public String join(Stream<String> stream) {
-		return join(stream, "", "", "");
+	public DoubleStream unboxedDouble(Stream<Double> stream) {
+		return stream.mapToDouble(Double::doubleValue);
 	}
 
-	public String join(Stream<String> stream, String delimiter) {
-		return join(stream, delimiter, "", "");
-	}
-
-	public String join(Stream<String> stream, String delimiter, String prefix, String suffix) {
-		return stream.collect(Collectors.joining(delimiter, prefix, suffix));
+	public DoubleStream filterOptionalDouble(Stream<OptionalDouble> stream) {
+		return stream.filter(OptionalDouble::isPresent).mapToDouble(OptionalDouble::getAsDouble);
 	}
 }

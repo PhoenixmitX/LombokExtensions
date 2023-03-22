@@ -1,4 +1,4 @@
-package de.phoenixmitx.lombokextensions.codegen.delegate;
+package de.phoenixmitx.lombokextensions.codegen.transformers.general.staticdelegate;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

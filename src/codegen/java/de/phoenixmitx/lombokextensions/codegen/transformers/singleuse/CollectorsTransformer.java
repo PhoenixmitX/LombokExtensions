@@ -1,12 +1,13 @@
-package de.phoenixmitx.lombokextensions.codegen.singleuse.collectors;
+package de.phoenixmitx.lombokextensions.codegen.transformers.singleuse;
 
 import java.io.IOException;
 
-import de.phoenixmitx.lombokextensions.codegen.transformer.CodegenTransformer;
+import de.phoenixmitx.lombokextensions.codegen.transformers.CodegenTransformer;
 import de.phoenixmitx.lombokextensions.codegen.utils.ArrayUtils;
 import de.phoenixmitx.lombokextensions.codegen.utils.GenericUtils;
 import de.phoenixmitx.lombokextensions.codegen.utils.OrdinalParameter;
 import javassist.CannotCompileException;
+import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.Modifier;
@@ -21,10 +22,10 @@ import javassist.bytecode.SignatureAttribute.TypeArgument;
 import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod({ OrdinalParameter.class })
-public class CollectorsTransformer extends CodegenTransformer {
+public class CollectorsTransformer implements CodegenTransformer {
 
 	@Override
-	public boolean transform(CtClass ctClass) throws IOException, CannotCompileException, NotFoundException, BadBytecode {
+	public boolean transform(CtClass ctClass, ClassPool classPool) throws IOException, CannotCompileException, NotFoundException, BadBytecode {
 		if (!ctClass.getName().equals("de.phoenixmitx.lombokextensions.CollectorsExtension")) {
 			return false;
 		}
@@ -34,16 +35,16 @@ public class CollectorsTransformer extends CodegenTransformer {
 
 		for (CtMethod collectorsMethod : collectorsClass.getMethods()) {
 			CtClass collectorReturnType = collectorsMethod.getReturnType();
-			if (!collectorReturnType.equals(collectorClass) || (~collectorsMethod.getModifiers() | (Modifier.PUBLIC | Modifier.STATIC)) == 0) {
+			if (!collectorReturnType.equals(collectorClass) || (~collectorsMethod.getModifiers() & (Modifier.PUBLIC | Modifier.STATIC)) != 0) {
 				continue;
 			}
-			ctClass.addMethod(createExtensionMethod(collectorsMethod, ctClass));
+			ctClass.addMethod(createExtensionMethod(collectorsMethod, ctClass, classPool));
 		}
 
 		return true;
 	}
 
-	private CtMethod createExtensionMethod(CtMethod collectorsMethod, CtClass extensionClass) throws NotFoundException, CannotCompileException, BadBytecode {
+	private CtMethod createExtensionMethod(CtMethod collectorsMethod, CtClass extensionClass, ClassPool classPool) throws NotFoundException, CannotCompileException, BadBytecode {
 		MethodSignature collectorsMethodSignature = SignatureAttribute.toMethodSignature(collectorsMethod.getGenericSignature());
 
 		TypeArgument[] collectorTypeArguments = ((ClassType) collectorsMethodSignature.getReturnType()).getTypeArguments();

@@ -1,56 +1,41 @@
 package de.phoenixmitx.lombokextensions.codegen.utils;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
-import javassist.bytecode.annotation.AnnotationMemberValue;
+import javassist.ClassPool;
+import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.ArrayMemberValue;
-import javassist.bytecode.annotation.BooleanMemberValue;
-import javassist.bytecode.annotation.ByteMemberValue;
-import javassist.bytecode.annotation.CharMemberValue;
 import javassist.bytecode.annotation.ClassMemberValue;
-import javassist.bytecode.annotation.DoubleMemberValue;
-import javassist.bytecode.annotation.EnumMemberValue;
-import javassist.bytecode.annotation.FloatMemberValue;
-import javassist.bytecode.annotation.IntegerMemberValue;
-import javassist.bytecode.annotation.LongMemberValue;
 import javassist.bytecode.annotation.MemberValue;
-import javassist.bytecode.annotation.ShortMemberValue;
-import javassist.bytecode.annotation.StringMemberValue;
+import javassist.bytecode.annotation.NoSuchClassError;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class AnnotationUtils {
-	public Object getValue(MemberValue memberValue) {
-		if (memberValue instanceof AnnotationMemberValue) {
-			return ((AnnotationMemberValue) memberValue).getValue();
+
+	@SuppressWarnings("unchecked")
+	public <T extends java.lang.annotation.Annotation> T getJavaAnnotation(Annotation annotation, ClassPool classPool) throws ClassNotFoundException, NoSuchClassError {
+		ensureAllClassesRecompiled(annotation, classPool);
+		return (T) annotation.toAnnotationType(AnnotationUtils.class.getClassLoader(), classPool);
+	}
+
+	public void ensureAllClassesRecompiled(Annotation annotation, ClassPool classPool) throws ClassNotFoundException {
+		annotation.getMemberNames().stream()
+				.map(annotation::getMemberValue)
+				.flatMap(AnnotationUtils::getClassMemberValues)
+				.map(ClassMemberValue::getValue)
+				.forEach(classPool::getOrNull);
+	}
+
+	private Stream<ClassMemberValue> getClassMemberValues(MemberValue memberValue) {
+		if (memberValue instanceof ClassMemberValue) {
+			return Stream.of((ClassMemberValue) memberValue);
 		} else if (memberValue instanceof ArrayMemberValue) {
 			return Arrays.stream(((ArrayMemberValue) memberValue).getValue())
-					.map(AnnotationUtils::getValue)
-					.toArray();
-		} else if (memberValue instanceof BooleanMemberValue) {
-			return ((BooleanMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof ByteMemberValue) {
-			return ((ByteMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof CharMemberValue) {
-			return ((CharMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof DoubleMemberValue) {
-			return ((DoubleMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof EnumMemberValue) {
-			return ((EnumMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof FloatMemberValue) {
-			return ((FloatMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof IntegerMemberValue) {
-			return ((IntegerMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof LongMemberValue) {
-			return ((LongMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof ShortMemberValue) {
-			return ((ShortMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof StringMemberValue) {
-			return ((StringMemberValue) memberValue).getValue();
-		} else if (memberValue instanceof ClassMemberValue) {
-			return ((ClassMemberValue) memberValue).getValue();
+					.flatMap(AnnotationUtils::getClassMemberValues);
 		} else {
-			throw new IllegalArgumentException("Unknown MemberValue type: " + memberValue.getClass().getName());
+			return Stream.empty();
 		}
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import de.phoenixmitx.lombokextensions.codegen.defauld.DefaultValue;
+import de.phoenixmitx.lombokextensions.codegen.transformers.general.defauld.DefaultValue;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

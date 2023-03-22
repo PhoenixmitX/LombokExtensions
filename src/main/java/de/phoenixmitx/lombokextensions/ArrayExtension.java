@@ -9,7 +9,7 @@ import de.phoenixmitx.lombokextensions.array.GenericArrayExtension;
 import de.phoenixmitx.lombokextensions.array.IntArrayExtension;
 import de.phoenixmitx.lombokextensions.array.LongArrayExtension;
 import de.phoenixmitx.lombokextensions.array.ShortArrayExtension;
-import de.phoenixmitx.lombokextensions.codegen.delegate.StaticDelegate;
+import de.phoenixmitx.lombokextensions.codegen.transformers.general.staticdelegate.StaticDelegate;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

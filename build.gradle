@@ -44,18 +44,12 @@ task codegenJar (type: Jar) {
 	from { configurations.codegenRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 
 	archiveFileName = "LombokExtensions-${project.version}-codegen.jar"
-	manifest {
-		attributes(
-			"Premain-Class": "de.phoenixmitx.lombokextensions.codegen.CodegenAgent",
-		)
-	}
 }
 
 task recompileJava(type: JavaExec) {
 	dependsOn codegenJar, compileJava
 	classpath = sourceSets.main.output + sourceSets.codegen.output + sourceSets.codegen.compileClasspath
-	jvmArgs += "-javaagent:$codegenJar.archivePath".toString()
-	mainClass = "de.phoenixmitx.lombokextensions.codegen.CodegenAgent"
+	mainClass = "de.phoenixmitx.lombokextensions.codegen.Codegen"
 	systemProperties = [
 		"java.util.logging.SimpleFormatter.format": "[%1\$tF %1\$tT] [%4\$-7s] %5\$s %n"
 	]

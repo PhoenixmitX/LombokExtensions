@@ -1,4 +1,4 @@
-package de.phoenixmitx.lombokextensions.codegen.defauld;
+package de.phoenixmitx.lombokextensions.codegen.transformers.general.defauld;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
