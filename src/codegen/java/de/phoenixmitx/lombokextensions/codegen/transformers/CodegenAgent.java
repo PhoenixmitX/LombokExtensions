@@ -3,7 +3,7 @@ package de.phoenixmitx.lombokextensions.codegen.transformers;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class CodegenAgent {
 
 	public void transformAll() throws IOException {
     log.info("CodegenAgent: Transforming classes");
-		ClassScanner.scan(Path.of("build/classes/java/main/"), classPool::getOrNull);
+		ClassScanner.scan(Paths.get("build/classes/java/main/"), classPool::getOrNull);
 		log.info("CodegenAgent: Done");
 	}
 }
