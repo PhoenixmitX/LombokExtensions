@@ -53,13 +53,13 @@ LombokExtensions provides a variety of utility classes to simplify your code. He
 
 ```java
 import lombok.experimental.ExtensionMethod;
-import de.pheonixmitx.lombokextensions.ArrayExtension;
+import de.phoenixmitx.lombokextensions.ArrayExtension;
 
 @ExtensionMethod({ ArrayExtension.class })
-public class MyClass {
+public class Example {
     public static void main(String[] args) {
         int[] array = new int[] {1, 2, 3, 4, 5};
-        int sum = array.sum();
+        long sum = array.sum();
         System.out.println("Sum of array elements: " + sum);
     }
 }
