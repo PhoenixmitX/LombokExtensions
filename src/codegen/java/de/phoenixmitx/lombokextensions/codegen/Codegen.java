@@ -15,15 +15,15 @@ public class Codegen {
 
   public static void main(String[] args) throws IOException {
     new CodegenAgent(new CodegenTransformer[] {
+			
 			// Single use transformers
 			new CollectorsTransformer(),
 
 			// Transformers that can be used multiple times (order matters for classes that use multiple transformers)
 			new PrimitiveTransformer(),
 			new DefaultValueTransformer(),
-
-			// Static delegate as last transformer
 			new StaticDelegateTransformer()
+
 		}).transformAll();
   }
 }

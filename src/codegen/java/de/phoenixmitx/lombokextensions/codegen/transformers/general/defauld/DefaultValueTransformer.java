@@ -27,8 +27,6 @@ public class DefaultValueTransformer extends CodegenAnnotationTransformer<Defaul
 		super(DefaultValue.class);
 	}
 
-
-
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void transformMethodWithParameterAnnotations(CtClass ctClass, ClassPool classPool, CtMethod method, Optional<DefaultValue>[] allAnnotations) throws IOException, CannotCompileException, NotFoundException, BadBytecode {
